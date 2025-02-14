@@ -1,0 +1,234 @@
+// Write your overrides
+@font-face {
+  font-family: avenir_b;
+  src: url(../assets/fonts/AvenirArabic-Book.otf);
+}
+
+@font-face {
+  font-family: avenir_r;
+  src: url(../assets/fonts/AvenirArabic-Heavy.otf);
+}
+
+@font-face {
+  font-family: avenir_l;
+  src: url(../assets/fonts/AvenirArabic-Light.otf);
+}
+
+@font-face {
+  font-family: avenir_m;
+  src: url(../assets/fonts/AvenirArabic-Medium.otf);
+}
+
+body,
+* {
+  font-family: avenir_r !important;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+
+.v-chip.v-chip--size-small {
+  padding: 10px 18px;
+  border-radius: 25px;
+}
+
+
+tfoot {
+  height: 50vh;
+}
+
+.vue__time-picker {
+  padding: 6px;
+
+  & input.vue__time-picker-input {
+    border-radius: 6px;
+    width: 100% !important;
+  }
+}
+
+.v-img__img--contain {
+  object-fit: cover !important;
+}
+
+
+.vld-overlay.is-full-page {
+  z-index: 9999 !important;
+}
+
+
+.v-select__content {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+}
+
+/*****************************************
+*** start notification messages  style ***
+******************************************/
+.Vue-Toastification__toast {
+  min-height: 50px;
+}
+
+.Vue-Toastification__toast--default.success-class {
+  background-color: #26A69A;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.Vue-Toastification__toast-component-body {}
+
+.Vue-Toastification__toast--default.fail-class {
+  background-color: #EF5350;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.toastification-close-icon {
+  border-radius: 4px;
+  height: 28px;
+  width: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    path {
+      fill: #ffffff;
+    }
+  }
+}
+
+.Vue-Toastification__toast--default {
+  margin-right: auto !important;
+  margin-left: 0 !important;
+  direction: rtl !important;
+}
+
+/***************************************
+*** end notification messages  style ***
+****************************************/
+
+.layout-horizontal-nav .nav-link:not(.sub-item) a.router-link-active,
+.layout-horizontal-nav .nav-group:not(.sub-item).active>.popper-triggerer>.nav-group-label,
+.layout-nav-type-vertical .layout-vertical-nav .nav-link>.router-link-exact-active {
+  background: linear-gradient(72.47deg, rgba(var(--v-global-theme-primary), 0.7) 22.16%, rgb(var(--v-global-theme-primary)) 76.47%) !important;
+}
+
+:lang(en) {
+
+  .layout-horizontal-nav .nav-link:not(.sub-item) a.router-link-active,
+  .layout-horizontal-nav .nav-group:not(.sub-item).active>.popper-triggerer>.nav-group-label,
+  .layout-nav-type-vertical .layout-vertical-nav .nav-link>.router-link-exact-active {
+    background: linear-gradient(72.47deg, rgb(var(--v-global-theme-primary)) 22.16%, rgba(var(--v-global-theme-primary), 0.7) 76.47%) !important;
+  }
+}
+
+
+.vue-map-container {
+  width: 100%;
+}
+
+
+.mapBtn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #1F1F1F;
+  border: none;
+  position: absolute;
+  bottom: 100px;
+  left: 40px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.remove-image{
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.hide-input{
+
+  & .v-field__input, .v-field__clearable{
+    opacity: 0!important;
+  }
+}
+.ql-editor ol, .ql-editor ul {
+  padding-right: 1.5em !important;
+  padding-left: 0 !important;
+}
+
+.texteditor {
+  width: 100%;
+  margin-top: 12px;
+  & .ql-toolbar.ql-snow {
+      // border: 1px solid $gray-200 !important;
+      border-radius: 8px 8px 0 0;
+      padding: 16px;
+      font-family: avenir_r !important;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 0 !important;
+  }
+
+  & .ql-formats {
+      margin-right: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+
+      // & .ql-header.ql-picker {
+      //     display: none !important;
+      // }
+
+      & button {
+          display: flex !important;
+          width: 32px !important;
+          height: 32px !important;
+          justify-content: center !important;
+          align-items: center !important;
+          gap: 10px !important;
+          border-radius: 4px !important;
+          // border: 1px solid $gray-200 !important;
+          padding: 8px !important;
+      }
+  }
+
+  & .ql-container.ql-snow {
+      // border: 1px solid $gray-200 !important;
+      border-radius: 0 0 8px 8px;
+      border-top: none !important;
+      padding: 16px;
+      font-family: avenir_r !important;
+  }
+
+  & .ql-editor {
+      font-size: 16px;
+      color: #1F1F1F !important;
+      padding: 0 !important;
+      min-height: 35vh;
+
+      &.ql-blank:before {
+          // color: $text-placeholder !important;
+      }
+  }
+}
+
+table {
+
+      td  {
+        max-width: 200px;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    
+}
+
+

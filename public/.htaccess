@@ -1,0 +1,18 @@
+<IfModule mod_headers.c>
+      <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+      </IfModule>
+
+      <FilesMatch "\.(?i:gif|ico|pdf|flv|jpg|jpeg|png|svg|js|css|swf|webp|ttf)$">
+        Header set Cache-Control "max-age=31536000, public, must-revalidate"
+        Header unset Last-Modified
+        Header unset ETag
+      </FilesMatch>
+        RewriteEngine On
+        RewriteBase /
+        RewriteRule ^index\.html$ - [L]
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . /index.html [L]
+</IfModule>
+

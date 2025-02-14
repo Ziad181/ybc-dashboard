@@ -1,0 +1,26 @@
+@font-face {
+  font-family: avenir_b;
+  src: url(../assets/fonts/AvenirArabic-Book.otf);
+}
+
+@font-face {
+  font-family: avenir_r;
+  src: url(../assets/fonts/AvenirArabic-Heavy.otf);
+}
+
+@font-face {
+  font-family: avenir_l;
+  src: url(../assets/fonts/AvenirArabic-Light.otf);
+}
+
+@font-face {
+  font-family: avenir_m;
+  src: url(../assets/fonts/AvenirArabic-Medium.otf);
+}
+
+body, * {
+  font-family: avenir_r !important;
+  font-size: 16px;
+  letter-spacing: 0;
+}
+/*# sourceMappingURL=styles.css.map */
