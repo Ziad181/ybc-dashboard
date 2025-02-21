@@ -10,14 +10,6 @@ export default [{
 
 },
 {
-  title: 'homePageContent',
-  icon: {
-    icon: 'tabler-clipboard-text'
-  },
-  to: 'page-content',
-  permissions: [permissions.readHomePage],
-},
-{
   title: 'banners',
   icon: {
     icon: 'tabler-photo'
@@ -27,63 +19,24 @@ export default [{
 },
 
 {
-  title: 'Solar Energy',
-  icon: { icon: 'tabler-solar-panel-2' },
-  permissions: [permissions.readSolarEnergy],
+  title: 'about_us',
+  icon: { icon: 'tabler-clipboard-text' },
+  permissions: [permissions.readHomePage],
   children: [
     {
-      title: 'Categories Description',
-      to: 'solar-energy-categories-description',
+      title: 'home',
+      to: 'about-us-home',
     },
     {
-      title: 'solutions',
-      to: 'solar-energy-solutions',
+      title: 'business_support_center',
+      to: 'about-us-business-support-center',
     },
     {
-      title: 'services',
-      to: 'solar-energy-services',
-    },
-    {
-      title: 'categories',
-      to: 'solar-energy-categories',
-    },
-    {
-      title: 'products',
-      to: 'solar-energy-products',
-    },
-   
-
-  ],
-},
-
-{
-  title: 'Electricity',
-  icon: { icon: 'tabler-plug' },
-  permissions: [permissions.readElectricity],
-  children: [
-    {
-      title: 'Categories Description',
-      to: 'electricity-categories-description',
-    },
-    {
-      title: 'solutions',
-      to: 'electricity-solutions',
-    },
-    {
-      title: 'services',
-      to: 'electricity-services',
-    },
-    {
-      title: 'categories',
-      to: 'electricity-categories',
-    },
-    {
-      title: 'products',
-      to: 'electricity-products',
+      title: 'yemen_business_center',
+      to: 'about-us-yemen-business-center',
     },
   ],
 },
-
 {
   title: 'Blog',
   icon: { icon: 'tabler-article' },
@@ -91,33 +44,25 @@ export default [{
   children: [
     {
       title: 'news',
-      to: 'news',
+      to: 'blog-news',
     },
     {
       title: 'articles',
-      to: 'articles',
+      to: 'blog-articles',
     },
     {
       title: 'books',
-      to: 'books',
+      to: 'blog-books',
     },
 
   ],
 },
 {
-  title: 'partnerships',
-  icon: {
-    icon: 'tabler-hexagons'
-  },
-  to: 'partnerships',
-  permissions: [permissions.readPartnerships],
-},
-{
-  title: 'clients',
+  title: 'partners',
   icon: {
     icon: 'tabler-users'
   },
-  to: 'clients',
+  to: 'partners',
   permissions: [permissions.readClients],
 },
 {

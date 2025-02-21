@@ -1,12 +1,12 @@
 <script setup>
-import { useArticlesStore } from "@/stores/articles";
+import { usePartnersStore } from "@/stores/partners";
 import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
-const store = useArticlesStore();
+const store = usePartnersStore();
 
 const filteredData = ref({
   search: "",
@@ -16,7 +16,7 @@ const filteredData = ref({
 });
 
 onMounted(() => {
-  store.loadArticles(filteredData);
+  store.loadPartners(filteredData);
 });
 
 const status = [
@@ -47,18 +47,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadPartners(filteredData);
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadArticles(filteredData);
+  store.loadPartners(filteredData);
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadArticles(filteredData);
+  store.loadPartners(filteredData);
 };
 
 const changeStatus = (id, status) => {
@@ -66,21 +66,21 @@ const changeStatus = (id, status) => {
     id: id,
     status: status == 0 ? 1 : 0,
   };
-  store.articleChangeStatus(data);
+  store.partnerChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadPartners(filteredData);
   }, 1000);
 };
 
-const deleteArticleFun = (id, status) => {
+const deletePartnerFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteArticle(data);
+  store.deletePartner(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadPartners(filteredData);
   }, 1000);
 };
 </script>
@@ -89,7 +89,7 @@ const deleteArticleFun = (id, status) => {
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard :title="$t('nav.articles')">
+        <VCard :title="$t('nav.partners')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
@@ -115,8 +115,8 @@ const deleteArticleFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'articles-add' }">
-                  {{ $t("common.add_article") }}
+                <VBtn class="px-7" :to="{ name: 'partners-add' }">
+                  {{ $t("common.add_partner") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->
@@ -141,15 +141,11 @@ const deleteArticleFun = (id, status) => {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">
-                  {{ $t("common.The name of the author of the article") }}
+                  {{ $t("common.name") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.title") }}
+                  {{ $t("common.url") }}
                 </th>
-                <th scope="col">
-                  {{ $t("common.content") }}
-                </th>
-
                 <th scope="col">
                   {{ $t("common.created_at") }}
                 </th>
@@ -162,7 +158,7 @@ const deleteArticleFun = (id, status) => {
             <!-- 👉 table body -->
             <tbody>
               <tr
-                v-for="(item, index) in store.getArticles"
+                v-for="(item, index) in store.getPartners"
                 :key="index"
                 style="height: 3.75rem"
               >
@@ -179,19 +175,19 @@ const deleteArticleFun = (id, status) => {
                       size="38"
                     >
                       <VImg
-                        v-if="item.image"
-                        :src="getAssetUploadedFilesPath(item.image)"
+                        v-if="item.logo"
+                        :src="getAssetUploadedFilesPath(item.logo)"
                       />
                       <span v-else>{{ avatarText(item.name) }}</span>
                     </VAvatar>
                     {{ item.name }}
                   </div>
                 </td>
+
                 <td class="pt-2 pb-3">
-                  <div v-html="item.title"></div>
-                </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.content.substring(0, 100) + '...'"></div>
+                  <a :href="item.url" target="_blank">
+                    {{ item.url ?? "----------" }}</a
+                  >
                 </td>
                 <td class="pt-2 pb-3">
                   {{
@@ -230,7 +226,7 @@ const deleteArticleFun = (id, status) => {
                         <VListItem
                           :title="$t('common.edit')"
                           :to="{
-                            name: 'articles-edit-id',
+                            name: 'partners-edit-id',
                             params: { id: item.id },
                           }"
                         />
@@ -268,7 +264,7 @@ const deleteArticleFun = (id, status) => {
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getArticles.length">
+            <tfoot v-show="!store.getPartners.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -355,7 +351,7 @@ const deleteArticleFun = (id, status) => {
                 <VBtn
                   color="error"
                   @click="
-                    deleteArticleFun(
+                    deletePartnerFun(
                       isDataModalVisible.id,
                       isDataModalVisible.is_active
                     )
@@ -369,7 +365,7 @@ const deleteArticleFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalArticles.currentPage"
+            v-if="store.getTotalPartners.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -383,10 +379,10 @@ const deleteArticleFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalArticles.currentPage"
+              v-model="store.getTotalPartners.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalArticles.totalPages"
+              :length="store.getTotalPartners.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

@@ -1,5 +1,5 @@
 <script setup>
-import { useArticlesStore } from "@/stores/articles";
+import { usePartnersStore } from "@/stores/partners";
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -22,18 +22,15 @@ import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
 const router = useRouter();
-const store = useArticlesStore();
+const store = usePartnersStore();
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
 
 const formData = ref({
-  name_en: "",
   name_ar: "",
-  title_en: "",
-  title_ar: "",
-  content_en: "",
-  content_ar: "",
+  name_en: "",
+  url: "",
   images: [],
 });
 
@@ -55,17 +52,15 @@ const onSubmitForm = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
       var data = {
-        name_en: formData.value.name_en,
         name_ar: formData.value.name_ar,
-        title_en: formData.value.title_en,
-        title_ar: formData.value.title_ar,
-        content_en: formData.value.content_en,
-        content_ar: formData.value.content_ar,
-        image: images.value && images.value.length > 0 ? images.value[0] : null,
+        name_en: formData.value.name_en,
+        url: formData.value.url,
+        logo: images.value && images.value.length > 0 ? images.value[0] : [],
       };
-      store.storeArticle(data).then((res) => {
+
+      store.storePartner(data).then((res) => {
         router.push({
-          name: "articles",
+          name: "partners",
         });
       });
     }
@@ -94,7 +89,7 @@ onMounted(() => {});
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.add_article") }}
+              {{ $t("common.add_partner") }}
             </h4>
           </div>
           <VDivider />
@@ -124,83 +119,41 @@ onMounted(() => {});
                 </VRow>
                 <VFileInput
                   accept="image/*"
-                  :label="$t('common.Photo of the author of the article')"
+                  :label="$t('common.logo')"
                   v-model="formData.images"
                   @change="loadImages"
                   class="hide-input"
                 />
               </VCol>
-
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.name_ar"
-                  :label="
-                    $t('common.The name of the author of the article in Arabic')
-                  "
+                  :label="$t('common.name_ar')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.name_en"
+                  :label="$t('common.name_en')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.url"
                   :label="
-                    $t(
-                      'common.The name of the author of the article in English'
-                    )
+                    $t('common.url') + ' ' + '( ' + $t('common.Optional') + ' )'
                   "
-                  :rules="[requiredValidator]"
+                  :rules="[urlValidator]"
                 />
               </VCol>
 
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.title_ar"
-                  :label="$t('common.title_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.title_en"
-                  :label="$t('common.title_en')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-
-              <VCol cols="12">
-                <label>{{ $t("common.content_ar") }}</label>
-                <div class="texteditor" dir="ltr">
-                  <QuillEditor
-                    v-model:content="formData.content_ar"
-                    theme="snow"
-                    toolbar="full"
-                    contentType="html"
-                    name="content_ar"
-                    :placeholder="$t('common.content_ar')"
-                  />
-                </div>
-              </VCol>
-              <VCol cols="12">
-                <label>{{ $t("common.content_en") }}</label>
-                <div class="texteditor" dir="ltr">
-                  <QuillEditor
-                    v-model:content="formData.content_en"
-                    theme="snow"
-                    toolbar="full"
-                    contentType="html"
-                    name="content_en"
-                    :placeholder="$t('common.content_en')"
-                  />
-                </div>
-              </VCol>
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
                 <VBtn
                   type="submit"
-                  :disabled="
-                    !formData.images.length &&
-                    !images.length 
-                  "
+                  :disabled="!formData.images.length && !images.length"
                   >{{ $t("common.save") }}</VBtn
                 >
 
@@ -208,7 +161,7 @@ onMounted(() => {});
                   color="secondary"
                   variant="tonal"
                   type="reset"
-                  :to="{ name: 'articles' }"
+                  :to="{ name: 'partners' }"
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>

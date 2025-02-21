@@ -1,5 +1,5 @@
 <script setup>
-import { useArticlesStore } from "@/stores/articles";
+import { useNewsStore } from "@/stores/news";
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -22,16 +22,12 @@ import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
 const router = useRouter();
-const route = useRoute();
-const store = useArticlesStore();
+const store = useNewsStore();
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
 
 const formData = ref({
-  id: route.params.id,
-  name_en: "",
-  name_ar: "",
   title_en: "",
   title_ar: "",
   content_en: "",
@@ -42,7 +38,6 @@ const formData = ref({
 const loadImages = (e) => {
   const files = e.target.files;
   if (files.length > 0) {
-    images.value = [];
     images.value.push(...files);
   }
 };
@@ -56,38 +51,18 @@ const removeImageByIndex = (index) => {
 const onSubmitForm = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      var data = {
-        id: formData.value.id,
-        name_en: formData.value.name_en,
-        name_ar: formData.value.name_ar,
-        title_en: formData.value.title_en,
-        title_ar: formData.value.title_ar,
-        content_en: formData.value.content_en,
-        content_ar: formData.value.content_ar,
-        image: images.value && images.value.length > 0 ? images.value[0] : null,
-      };
-      store.updateArticle(data).then((res) => {
+      formData.value.images =
+        images.value && images.value.length > 0 ? images.value : [];
+      store.storeNews(formData.value).then((res) => {
         router.push({
-          name: "articles",
+          name: "blog-news",
         });
       });
     }
   });
 };
 
-onMounted(() => {
-  store.loadArticleDetails(route.params.id).then(() => {
-    formData.value.name_ar = store.getArticleDetails.name_ar;
-    formData.value.name_en = store.getArticleDetails.name_en;
-    formData.value.title_ar = store.getArticleDetails.title_ar;
-    formData.value.title_en = store.getArticleDetails.title_en;
-    formData.value.content_ar = store.getArticleDetails.content_ar;
-    formData.value.content_en = store.getArticleDetails.content_en;
-    images.value = store.getArticleDetails.image
-      ? [store.getArticleDetails.image]
-      : [];
-  });
-});
+onMounted(() => {});
 </script>
 
 <template>
@@ -109,7 +84,7 @@ onMounted(() => {
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.edit_article") }}
+              {{ $t("common.add_news") }}
             </h4>
           </div>
           <VDivider />
@@ -139,30 +114,12 @@ onMounted(() => {
                 </VRow>
                 <VFileInput
                   accept="image/*"
-                  :label="$t('common.Photo of the author of the article')"
+                  chips
+                  multiple
+                  :label="$t('common.images')"
                   v-model="formData.images"
                   @change="loadImages"
                   class="hide-input"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.name_ar"
-                  :label="
-                    $t('common.The name of the author of the article in Arabic')
-                  "
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.name_en"
-                  :label="
-                    $t(
-                      'common.The name of the author of the article in English'
-                    )
-                  "
-                  :rules="[requiredValidator]"
                 />
               </VCol>
               <VCol md="6" cols="12">
@@ -179,6 +136,7 @@ onMounted(() => {
                   :rules="[requiredValidator]"
                 />
               </VCol>
+
 
               <VCol cols="12">
                 <label>{{ $t("common.content_ar") }}</label>
@@ -208,20 +166,13 @@ onMounted(() => {
               </VCol>
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
-                <VBtn
-                  type="submit"
-                  :disabled="
-                    !formData.images.length &&
-                    !images.length 
-                  "
-                  >{{ $t("common.save") }}</VBtn
-                >
+                <VBtn type="submit">{{ $t("common.save") }}</VBtn>
 
                 <VBtn
                   color="secondary"
                   variant="tonal"
                   type="reset"
-                  :to="{ name: 'articles' }"
+                  :to="{ name: 'blog-news' }"
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>

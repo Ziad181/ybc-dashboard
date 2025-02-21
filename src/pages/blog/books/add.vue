@@ -1,5 +1,5 @@
 <script setup>
-import { useNewsStore } from "@/stores/news";
+import { useBooksStore } from "@/stores/books";
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -22,24 +22,29 @@ import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
 const router = useRouter();
-const route = useRoute();
-const store = useNewsStore();
+const store = useBooksStore();
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
+const types = ref([
+  { id: "business_support_center", title: t("nav.business_support_center") },
+  { id: "yemen_business_center", title: t("nav.yemen_business_center") },
+]);
 
 const formData = ref({
-  id: route.params.id,
+  type: null,
   title_en: "",
   title_ar: "",
-  content_en: "",
-  content_ar: "",
+  subtitle_en: "",
+  subtitle_ar: "",
   images: [],
+  file: [],
 });
 
 const loadImages = (e) => {
   const files = e.target.files;
   if (files.length > 0) {
+    images.value = [];
     images.value.push(...files);
   }
 };
@@ -53,32 +58,25 @@ const removeImageByIndex = (index) => {
 const onSubmitForm = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      formData.value.old_images =
-        images.value && images.value.length > 0
-          ? images.value.filter((image) => typeof image === "string")
-          : [];
-      formData.value.images =
-        images.value && images.value.length > 0
-          ? images.value.filter((image) => typeof image != "string")
-          : [];
-      store.updateNews(formData.value).then((res) => {
+      var data = {
+        type: formData.value.type,
+        title_en: formData.value.title_en,
+        title_ar: formData.value.title_ar,
+        subtitle_en: formData.value.subtitle_en,
+        subtitle_ar: formData.value.subtitle_ar,
+        image: images.value && images.value.length > 0 ? images.value[0] : null,
+        file: formData.value.file && formData.value.file.length > 0 ? formData.value.file[0] : null,
+      };
+      store.storeBook(data).then((res) => {
         router.push({
-          name: "news",
+          name: "blog-books",
         });
       });
     }
   });
 };
 
-onMounted(() => {
-  store.loadNewsDetails(route.params.id).then(() => {
-    formData.value.title_ar = store.getNewsDetails.title_ar;
-    formData.value.title_en = store.getNewsDetails.title_en;
-    formData.value.content_ar = store.getNewsDetails.content_ar;
-    formData.value.content_en = store.getNewsDetails.content_en;
-    images.value = store.getNewsDetails.images ?? [];
-  });
-});
+onMounted(() => {});
 </script>
 
 <template>
@@ -100,7 +98,7 @@ onMounted(() => {
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.edit_news") }}
+              {{ $t("common.add_book") }}
             </h4>
           </div>
           <VDivider />
@@ -130,12 +128,17 @@ onMounted(() => {
                 </VRow>
                 <VFileInput
                   accept="image/*"
-                  chips
-                  multiple
-                  :label="$t('common.images')"
+                  :label="$t('common.Cover Photo')"
                   v-model="formData.images"
                   @change="loadImages"
                   class="hide-input"
+                />
+              </VCol>
+              <VCol md="12" cols="12">
+                <VFileInput
+                  accept=".pdf,.doc,.docx"
+                  :label="$t('common.Book file')"
+                  v-model="formData.file"
                 />
               </VCol>
               <VCol md="6" cols="12">
@@ -152,42 +155,52 @@ onMounted(() => {
                   :rules="[requiredValidator]"
                 />
               </VCol>
-
-              <VCol cols="12">
-                <label>{{ $t("common.content_ar") }}</label>
-                <div class="texteditor" dir="ltr">
-                  <QuillEditor
-                    v-model:content="formData.content_ar"
-                    theme="snow"
-                    toolbar="full"
-                    contentType="html"
-                    name="content_ar"
-                    :placeholder="$t('common.content_ar')"
-                  />
-                </div>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.subtitle_ar"
+                  :label="
+                    $t('common.A simple description of the book in Arabic')
+                  "
+                  :rules="[requiredValidator]"
+                />
               </VCol>
-              <VCol cols="12">
-                <label>{{ $t("common.content_en") }}</label>
-                <div class="texteditor" dir="ltr">
-                  <QuillEditor
-                    v-model:content="formData.content_en"
-                    theme="snow"
-                    toolbar="full"
-                    contentType="html"
-                    name="content_en"
-                    :placeholder="$t('common.content_en')"
-                  />
-                </div>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.subtitle_en"
+                  :label="
+                    $t('common.A simple description of the book in English')
+                  "
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VSelect
+                  v-model="formData.type"
+                  :placeholder="$t('common.Place of issue')"
+                  :items="types"
+                  item-title="title"
+                  item-value="id"
+                  clearable
+                  clear-icon="tabler-x"
+                  :rules="[requiredValidator]"
+                />
               </VCol>
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
-                <VBtn type="submit">{{ $t("common.save") }}</VBtn>
+                <VBtn
+                  type="submit"
+                  :disabled="
+                    (!formData.images.length && !images.length) ||
+                    !formData.file.length
+                  "
+                  >{{ $t("common.save") }}</VBtn
+                >
 
                 <VBtn
                   color="secondary"
                   variant="tonal"
                   type="reset"
-                  :to="{ name: 'news' }"
+                  :to="{ name: 'blog-books' }"
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>

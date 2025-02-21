@@ -1,7 +1,4 @@
 <script setup>
-import { useCategoriesStore } from "@/stores/categories";
-import { usePartnershipsStore } from "@/stores/partnerships";
-import { useProductsStore } from "@/stores/products";
 import { useBannersStore } from "@/stores/banners";
 
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
@@ -14,50 +11,32 @@ import { useRouter } from "vue-router";
 const { t } = useI18n(); //
 const router = useRouter();
 const store = useBannersStore();
-const productsStore = useProductsStore();
 
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
 const sections = [
   {
-    title: t("nav.Solar Energy"),
-    id: "solar-energy",
+    title: t("nav.home"),
+    id: "home",
   },
   {
-    title: t("nav.Electricity"),
-    id: "electricity",
+    title: t("nav.business_support_center"),
+    id: "business_support_center",
+  },
+  {
+    title: t("nav.yemen_business_center"),
+    id: "yemen_business_center",
   },
 ];
 
-const filterData = ref({
-  section: "",
-  partnership_id: null,
-  category: null,
-  sub_category_id: null,
-  search: "",
-  status: null,
-  page: 1,
-  per_page: 10000,
-  is_feature: "0",
-});
 
 const formData = ref({
   section: null,
   title: "",
   link: "",
-  product_id: null,
   images: [],
 });
-
-const getProducts = () => {
-  if (formData.value.section) {
-    filterData.value.section = formData.value.section;
-    productsStore.loadProducts(filterData);
-    formData.value.product_id = null;
-  }
-};
-
 const loadImages = (e) => {
   const files = e.target.files;
   if (files.length > 0) {
@@ -79,7 +58,6 @@ const onSubmitForm = () => {
         section: formData.value.section,
         title: formData.value.title,
         link: formData.value.link,
-        product_id: formData.value.product_id ? formData.value.product_id.id : null,
         image: images.value && images.value.length > 0 ? images.value[0] : [],
       };
       store.storeBanner(data).then((res) => {
@@ -165,7 +143,6 @@ onMounted(() => {});
                   item-value="id"
                   clear-icon="tabler-x"
                   :rules="[requiredValidator]"
-                  @update:modelValue="getProducts"
                 />
               </VCol>
               <VCol md="6" cols="12">
@@ -176,25 +153,6 @@ onMounted(() => {});
                   "
                   :rules="[urlValidator]"
                 />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VSelect
-                  v-model="formData.product_id"
-                  :placeholder="
-                    $t('common.select_product') +
-                    ' ' +
-                    '( ' +
-                    $t('common.Optional') +
-                    ' )'
-                  "
-                  :items="productsStore.getProducts"
-                  item-title="name"
-                  clearable
-                  return-object
-                  clear-icon="tabler-x"
-                  :disabled="productsStore.getProducts.length === 0"
-                >
-                </VSelect>
               </VCol>
 
               <!-- 👉 Form Actions -->

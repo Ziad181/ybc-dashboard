@@ -12,7 +12,7 @@ const store = useAppsStore();
       :active="store.getloading"
       :can-cancel="false"
       :is-full-page="true"
-      :color="'#1F1F1F'"
+      :color="'#303778'"
     />
   </div>
 </template>

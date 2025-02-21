@@ -28,8 +28,8 @@ const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
 const types = ref([
-  { id: "business_support_center", title: t("common.business_support_center") },
-  { id: "yemen_business_center", title: t("common.yemen_business_center") },
+  { id: "business_support_center", title: t("nav.business_support_center") },
+  { id: "yemen_business_center", title: t("nav.yemen_business_center") },
 ]);
 
 const formData = ref({
@@ -75,7 +75,7 @@ const onSubmitForm = () => {
       };
       store.updateBook(data).then((res) => {
         router.push({
-          name: "books",
+          name: "blog-books",
         });
       });
     }
@@ -220,7 +220,7 @@ onMounted(() => {
                   color="secondary"
                   variant="tonal"
                   type="reset"
-                  :to="{ name: 'books' }"
+                  :to="{ name: 'blog-books' }"
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>

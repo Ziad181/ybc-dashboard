@@ -4,21 +4,6 @@ export default {
   data() {
     return {
       cards: [
-      {
-          title: "roles_management",
-          icon: 'tabler-user-check',
-          route: "settings-roles",
-        },
-        {
-          title: "users",
-          icon: 'tabler-users-group',
-          route: "settings-users",
-        },
-        {
-          title: "Branches",
-          icon: "tabler-buildings",
-          route: "settings-branches",
-        },
         {
           title: "Statistics",
           icon: "tabler-chart-dots",
@@ -29,6 +14,17 @@ export default {
           icon: "tabler-phone",
           route: "settings-contact-details",
         },
+        {
+          title: "roles_management",
+          icon: "tabler-user-check",
+          route: "settings-roles",
+        },
+        {
+          title: "users",
+          icon: "tabler-users-group",
+          route: "settings-users",
+        },
+
         {
           title: "profile",
           icon: "tabler-user-circle",

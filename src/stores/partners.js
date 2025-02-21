@@ -2,38 +2,38 @@ import { useAppsStore } from "@/stores/app";
 import { defineStore } from "pinia";
 
 const store = useAppsStore();
-export const useBranchesStore = defineStore({
-  id: "branches",
+export const usePartnersStore = defineStore({
+  id: "partners",
   state: () => ({
-    branches: [],
-    totalBranches: {
+    partners: [],
+    totalPartners: {
       currentPage: null,
       totalItems: null,
       totalPages: null,
     },
-    branchDetails: null,
+    partnerDetails: null,
   }),
   getters: {
-    getBranches: state => state.branches,
-    getTotalBranches: state => state.totalBranches,
-    getBranchDetails: state => state.branchDetails,
+    getPartners: state => state.partners,
+    getTotalPartners: state => state.totalPartners,
+    getPartnerDetails: state => state.partnerDetails,
   },
   actions: {
-    async loadBranches(data) {
+    async loadPartners(data) {
       store.loadingStart();
       await this.$http
         .get(
-          `/admin/branches?page=${data.value.page}&per_page=${data.value.per_page}&status=${
+          `/admin/partners?page=${data.value.page}&per_page=${data.value.per_page}&status=${
             data.value.status != null ? data.value.status : ""
           }&search=${data.value.search}`
         )
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {
-            this.branches = response.data.data.data;
-            this.totalBranches.currentPage = response.data.data.current_page;
-            this.totalBranches.totalItems = response.data.data.total;
-            this.totalBranches.totalPages = response.data.data.last_page;
+            this.partners = response.data.data.data;
+            this.totalPartners.currentPage = response.data.data.current_page;
+            this.totalPartners.totalItems = response.data.data.total;
+            this.totalPartners.totalPages = response.data.data.last_page;
           }
         })
         .catch(error => {
@@ -41,14 +41,14 @@ export const useBranchesStore = defineStore({
           throw error;
         });
     },
-    async loadBranchDetails(id) {
+    async loadPartnerDetails(id) {
       store.loadingStart();
       await this.$http
-        .get(`/admin/branches/detail/${id}`)
+        .get(`/admin/partners/detail/${id}`)
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {
-            this.branchDetails = response.data.data;
+            this.partnerDetails = response.data.data;
           }
         })
         .catch(error => {
@@ -56,11 +56,11 @@ export const useBranchesStore = defineStore({
           throw error;
         });
     },
-    async storeBranch(data) {
+    async storePartner(data) {
       store.loadingStart();
 
       return await this.$http
-        .post(`/admin/branches/create`, data, {
+        .post(`/admin/partners/create`, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -80,11 +80,11 @@ export const useBranchesStore = defineStore({
           throw error;
         });
     },
-    async updateBranch(data) {
+    async updatePartner(data) {
       store.loadingStart();
 
       return await this.$http
-        .post(`/admin/branches/update/${data.id}`, data, {
+        .post(`/admin/partners/update/${data.id}`, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -104,10 +104,10 @@ export const useBranchesStore = defineStore({
           throw error;
         });
     },
-    async branchChangeStatus(data) {
+    async partnerChangeStatus(data) {
       store.loadingStart();
       await this.$http
-        .post(`/admin/branches/toggle/${data.id}`, data)
+        .post(`/admin/partners/toggle/${data.id}`, data)
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {
@@ -122,10 +122,10 @@ export const useBranchesStore = defineStore({
           throw error;
         });
     },
-    async deleteBranch(data) {
+    async deletePartner(data) {
       store.loadingStart();
       await this.$http
-        .delete(`/admin/branches/delete/${data.id}`)
+        .delete(`/admin/partners/delete/${data.id}`)
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {

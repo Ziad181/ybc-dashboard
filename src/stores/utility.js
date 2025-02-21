@@ -11,10 +11,12 @@ export const useUtilityStore = defineStore({
   state: () => ({
     contactDetails : null,
     dashboard: null,
+    setting: null
   }),
   getters: {
     getContactDetails: state => state.contactDetails,
     getDashboard: state => state.dashboard,
+    getSetting: state => state.setting
   },
   actions: {
     async loadContactDetails() {
@@ -52,10 +54,26 @@ export const useUtilityStore = defineStore({
       })
     },
 
+    async loadSetting() {
+      store.loadingStart()
+
+      return await this.$http.get(`/admin/setting`).then(response => {
+        store.loadingFinish()
+        if (response.status === 200) {
+          this.setting = response.data.data
+          return true
+        }
+
+      }).catch(error => {
+        store.loadingFinish()
+        throw error
+      })
+    },
+
     async updateStatistics(data) {
       store.loadingStart()
 
-      return await this.$http.post(`/admin/contact-details/statistics/update`, data).then(response => {
+      return await this.$http.post(`/admin/setting/statistics/update`, data).then(response => {
         store.loadingFinish()
         if (response.status === 200) {
           this.$notificationMessage({

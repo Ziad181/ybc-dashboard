@@ -2,42 +2,41 @@
 <script setup>
 import i18n from "@/plugins/i18n";
 import { useUtilityStore } from "@/stores/utility";
-import {
-    requiredValidator
-} from "@validators";
+import { requiredValidator } from "@validators";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const store = useUtilityStore();
 
-const { getContactDetails } = storeToRefs(store);
+const { getSetting } = storeToRefs(store);
 
 const router = useRouter();
 
-const contactDetailForm = ref({
-  total_agents: 0,
-  total_branches: 0,
-  total_mw: 0,
+const statisticForm = ref({
+  total_member: 0,
+  total_conferences: 0,
+  total_seminar: 0,
+  total_workshops: 0,
 });
 
-watch(getContactDetails, () => {
-  if (getContactDetails.value) {
-    contactDetailForm.value.total_agents = getContactDetails.value.total_agents;
-    contactDetailForm.value.total_branches =
-      getContactDetails.value.total_branches;
-    contactDetailForm.value.total_mw =
-      getContactDetails.value.total_mw;
+watch(getSetting, () => {
+  if (getSetting.value) {
+    statisticForm.value.total_member = getSetting.value.total_member;
+    statisticForm.value.total_conferences =
+      getSetting.value.total_conferences;
+    statisticForm.value.total_seminar = getSetting.value.total_seminar;
+    statisticForm.value.total_workshops = getSetting.value.total_workshops;
   }
 });
 
 onMounted(() => {
-  store.loadContactDetails().then(() => {
-    contactDetailForm.value.total_agents = getContactDetails.value.total_agents;
-    contactDetailForm.value.total_branches =
-      getContactDetails.value.total_branches;
-    contactDetailForm.value.total_mw =
-      getContactDetails.value.total_mw;
+  store.loadSetting().then(() => {
+    statisticForm.value.total_member = getSetting.value.total_member;
+    statisticForm.value.total_conferences =
+      getSetting.value.total_conferences;
+    statisticForm.value.total_seminar = getSetting.value.total_seminar;
+    statisticForm.value.total_workshops = getSetting.value.total_workshops;
   });
 });
 
@@ -46,7 +45,7 @@ const refVForm = ref();
 const onSubmitForm = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
-      store.updateStatistics(contactDetailForm.value).then((res) => {});
+      store.updateStatistics(statisticForm.value).then((res) => {});
     }
   });
 };
@@ -80,24 +79,32 @@ const onSubmitForm = () => {
             <VRow>
               <VCol md="6" cols="12">
                 <VTextField
-                  v-model="contactDetailForm.total_agents"
-                  :label="$t('common.Total Agents')"
+                  v-model="statisticForm.total_member"
+                  :label="$t('common.total_member')"
                   :rules="[requiredValidator]"
                   type="number"
                 />
               </VCol>
               <VCol md="6" cols="12">
                 <VTextField
-                  v-model="contactDetailForm.total_branches"
-                  :label="$t('common.Total branches')"
+                  v-model="statisticForm.total_conferences"
+                  :label="$t('common.total_conferences')"
                   :rules="[requiredValidator]"
                   type="number"
                 />
               </VCol>
               <VCol cols="6" md="6">
                 <VTextField
-                  v-model="contactDetailForm.total_mw"
-                  :label="$t('common.Total MW')"
+                  v-model="statisticForm.total_seminar"
+                  :label="$t('common.total_seminar')"
+                  :rules="[requiredValidator]"
+                  type="number"
+                />
+              </VCol>
+              <VCol cols="6" md="6">
+                <VTextField
+                  v-model="statisticForm.total_workshops"
+                  :label="$t('common.total_workshops')"
                   :rules="[requiredValidator]"
                   type="number"
                 />

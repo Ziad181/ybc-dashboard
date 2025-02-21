@@ -1,12 +1,12 @@
 <script setup>
-import { useClientsStore } from "@/stores/clients";
+import { useBooksStore } from "@/stores/books";
 import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
-const store = useClientsStore();
+const store = useBooksStore();
 
 const filteredData = ref({
   search: "",
@@ -16,7 +16,7 @@ const filteredData = ref({
 });
 
 onMounted(() => {
-  store.loadClients(filteredData);
+  store.loadBooks(filteredData);
 });
 
 const status = [
@@ -47,18 +47,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadClients(filteredData);
+    store.loadBooks(filteredData);
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadClients(filteredData);
+  store.loadBooks(filteredData);
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadClients(filteredData);
+  store.loadBooks(filteredData);
 };
 
 const changeStatus = (id, status) => {
@@ -66,21 +66,21 @@ const changeStatus = (id, status) => {
     id: id,
     status: status == 0 ? 1 : 0,
   };
-  store.clientChangeStatus(data);
+  store.bookChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadClients(filteredData);
+    store.loadBooks(filteredData);
   }, 1000);
 };
 
-const deleteClientFun = (id, status) => {
+const deleteBookFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteClient(data);
+  store.deleteBook(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadClients(filteredData);
+    store.loadBooks(filteredData);
   }, 1000);
 };
 </script>
@@ -89,7 +89,7 @@ const deleteClientFun = (id, status) => {
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard :title="$t('nav.clients')">
+        <VCard :title="$t('nav.books')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
@@ -115,8 +115,8 @@ const deleteClientFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'clients-add' }">
-                  {{ $t("common.add_client") }}
+                <VBtn class="px-7" :to="{ name: 'blog-books-add' }">
+                  {{ $t("common.add_book") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->
@@ -141,10 +141,10 @@ const deleteClientFun = (id, status) => {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">
-                  {{ $t("common.name") }}
+                  {{ $t("common.title") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.url") }}
+                  {{ $t("common.Place of issue") }}
                 </th>
                 <th scope="col">
                   {{ $t("common.created_at") }}
@@ -158,7 +158,7 @@ const deleteClientFun = (id, status) => {
             <!-- 👉 table body -->
             <tbody>
               <tr
-                v-for="(item, index) in store.getClients"
+                v-for="(item, index) in store.getBooks"
                 :key="index"
                 style="height: 3.75rem"
               >
@@ -176,16 +176,16 @@ const deleteClientFun = (id, status) => {
                     >
                       <VImg
                         v-if="item.image"
-                        :src="getAssetUploadedFilesPath(item.image)"
+                          :src="getAssetUploadedFilesPath(item.image)"
                       />
-                      <span v-else>{{ avatarText(item.name) }}</span>
+                      <span v-else>{{ avatarText(item.title) }}</span>
                     </VAvatar>
-                    {{ item.name }}
+                    {{ item.title }}
                   </div>
                 </td>
 
                 <td class="pt-2 pb-3">
-                  <a :href="item.url"> {{ item.url ?? "----------" }}</a>
+                  <div>{{  $t(`nav.${item.type}`) }}</div>
                 </td>
                 <td class="pt-2 pb-3">
                   {{
@@ -224,7 +224,7 @@ const deleteClientFun = (id, status) => {
                         <VListItem
                           :title="$t('common.edit')"
                           :to="{
-                            name: 'clients-edit-id',
+                            name: 'blog-books-edit-id',
                             params: { id: item.id },
                           }"
                         />
@@ -262,7 +262,7 @@ const deleteClientFun = (id, status) => {
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getClients.length">
+            <tfoot v-show="!store.getBooks.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -349,7 +349,7 @@ const deleteClientFun = (id, status) => {
                 <VBtn
                   color="error"
                   @click="
-                    deleteClientFun(
+                    deleteBookFun(
                       isDataModalVisible.id,
                       isDataModalVisible.is_active
                     )
@@ -363,7 +363,7 @@ const deleteClientFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalClients.currentPage"
+            v-if="store.getTotalBooks.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -377,10 +377,10 @@ const deleteClientFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalClients.currentPage"
+              v-model="store.getTotalBooks.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalClients.totalPages"
+              :length="store.getTotalBooks.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

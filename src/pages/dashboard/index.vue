@@ -6,15 +6,16 @@ import { avatarText } from "@core/utils/formatters";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
 const store = useNewsStore();
 const storeUtility = useUtilityStore();
 const statisticsVertical = ref([
   {
-    title: t("common.Total Agents"),
-    color: "#39D4FF",
-    icon: "tabler-stars",
+    title: t("common.total_member"),
+    color: "#303778",
+    icon: "tabler-users",
     stats: "0",
     height: 90,
     series: [
@@ -35,7 +36,7 @@ const statisticsVertical = ref([
         strokeColors: "transparent",
       },
       grid: { show: false },
-      colors: ["#39D4FF"],
+      colors: ["#303778"],
       fill: {
         type: "gradient",
         gradient: {
@@ -63,9 +64,9 @@ const statisticsVertical = ref([
     },
   },
   {
-    title: t("common.Total branches"),
-    color: "#39D4FF",
-    icon: "tabler-building",
+    title: t("common.total_conferences"),
+    color: "#303778",
+    icon: "tabler-brand-office",
     stats: "0",
     height: 90,
     series: [
@@ -87,7 +88,7 @@ const statisticsVertical = ref([
         strokeColors: "transparent",
       },
       grid: { show: false },
-      colors: ["#39D4FF"],
+      colors: ["#303778"],
       fill: {
         type: "gradient",
         gradient: {
@@ -115,9 +116,9 @@ const statisticsVertical = ref([
     },
   },
   {
-    title: t("common.Total MW"),
-    color: "#39D4FF",
-    icon: "tabler-plug",
+    title: t("common.total_seminar"),
+    color: "#303778",
+    icon: "tabler-article",
     stats: "0",
     height: 90,
     series: [
@@ -139,7 +140,59 @@ const statisticsVertical = ref([
         strokeColors: "transparent",
       },
       grid: { show: false },
-      colors: ["#39D4FF"],
+      colors: ["#303778"],
+      fill: {
+        type: "gradient",
+        gradient: {
+          shadeIntensity: 0.8,
+          opacityFrom: 0.6,
+          opacityTo: 0.1,
+        },
+      },
+      dataLabels: { enabled: false },
+      stroke: {
+        width: 2,
+        curve: "smooth",
+      },
+      xaxis: {
+        show: true,
+        lines: { show: false },
+        labels: { show: false },
+        stroke: { width: 0 },
+        axisBorder: { show: false },
+      },
+      yaxis: {
+        stroke: { width: 0 },
+        show: false,
+      },
+    },
+  },
+  {
+    title: t("common.total_workshops"),
+    color: "#303778",
+    icon: "tabler-settings-check",
+    stats: "0",
+    height: 90,
+    series: [
+      {
+        data: [300, 350, 330, 380, 340, 400, 380],
+      },
+    ],
+    chartOptions: {
+      chart: {
+        height: 90,
+        type: "area",
+        parentHeightOffset: 0,
+        toolbar: { show: false },
+        sparkline: { enabled: true },
+      },
+      tooltip: { enabled: false },
+      markers: {
+        colors: "transparent",
+        strokeColors: "transparent",
+      },
+      grid: { show: false },
+      colors: ["#303778"],
       fill: {
         type: "gradient",
         gradient: {
@@ -187,18 +240,20 @@ const filteredData = ref({
 const { getDashboard } = storeToRefs(storeUtility);
 
 watch(getDashboard, () => {
-  statisticsVertical.value[0].stats = getDashboard.value?.total_agents;
-  statisticsVertical.value[1].stats = getDashboard.value?.total_branches;
-  statisticsVertical.value[2].stats = getDashboard.value?.total_mw;
+  statisticsVertical.value[0].stats = getDashboard.value?.total_member;
+  statisticsVertical.value[1].stats = getDashboard.value?.total_conferences;
+  statisticsVertical.value[2].stats = getDashboard.value?.total_seminar;
+  statisticsVertical.value[3].stats = getDashboard.value?.total_workshops;
 });
 
 onMounted(() => {
   store.loadNews(filteredData);
   storeUtility.loadDashboard().then((res) => {
     if (res) {
-      statisticsVertical.value[0].stats = getDashboard.value?.total_agents;
-      statisticsVertical.value[1].stats = getDashboard.value?.total_branches;
-      statisticsVertical.value[2].stats = getDashboard.value?.total_mw;
+      statisticsVertical.value[0].stats = getDashboard.value?.total_member;
+      statisticsVertical.value[1].stats = getDashboard.value?.total_conferences;
+      statisticsVertical.value[2].stats = getDashboard.value?.total_seminar;
+      statisticsVertical.value[3].stats = getDashboard.value?.total_workshops;
     }
   });
 });
@@ -212,6 +267,7 @@ onMounted(() => {
       cols="12"
       sm="6"
       md="4"
+      lg="3"
     >
       <CardStatisticsVertical v-bind="statistics" />
     </VCol>
@@ -246,7 +302,7 @@ onMounted(() => {
             >
               <!-- 👉 Order -->
               <td>
-               {{ item.id }}
+                {{ item.id }}
               </td>
               <td>
                 <div class="d-flex align-center">
@@ -258,7 +314,7 @@ onMounted(() => {
                   >
                     <VImg
                       v-if="item.images && item.images.length > 0"
-                      :src="item.images[0]"
+                      :src="getAssetUploadedFilesPath(item.images[0])"
                     />
                     <span v-else>{{ avatarText(item.title) }}</span>
                   </VAvatar>
@@ -267,7 +323,7 @@ onMounted(() => {
               </td>
 
               <td class="pt-2 pb-3">
-                <div v-html="item.content.substring(0, 30) + '...'"></div>
+                <div v-html="item.content.substring(0, 100) + '...'"></div>
               </td>
               <td class="pt-2 pb-3">
                 {{

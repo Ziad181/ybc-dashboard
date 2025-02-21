@@ -172,9 +172,6 @@ const deleteBannerFun = (id, status) => {
                 <th scope="col">
                   {{ $t("common.url") }}
                 </th>
-                <th scope="col">
-                  {{ $t("common.product_name") }}
-                </th>
 
                 <th scope="col">
                   {{ $t("common.created_at") }}
@@ -214,18 +211,13 @@ const deleteBannerFun = (id, status) => {
                   </div>
                 </td>
                 <td>
-                  {{
-                    item.section == "solar-energy"
-                      ? $t("nav.Solar Energy")
-                      : $t("nav.Electricity")
-                  }}
+                  {{ $t(`nav.${item.section}`) }}
                 </td>
                 <td>
-                  <a v-if="item.link" :href="item.link">{{ item.link }}</a>
+                  <a v-if="item.link" :href="item.link" target="_blank">{{
+                    item.link
+                  }}</a>
                   <span v-if="!item.link">------------</span>
-                </td>
-                <td>
-                  {{ item.product_name ?? "------------" }}
                 </td>
 
                 <td class="pt-2 pb-3">

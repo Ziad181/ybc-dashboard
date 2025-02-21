@@ -1,11 +1,12 @@
 <script setup>
-import { useBranchesStore } from "@/stores/branches";
+import { useNewsStore } from "@/stores/news";
 import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
-const store = useBranchesStore();
+const store = useNewsStore();
 
 const filteredData = ref({
   search: "",
@@ -15,7 +16,7 @@ const filteredData = ref({
 });
 
 onMounted(() => {
-  store.loadBranches(filteredData);
+  store.loadNews(filteredData);
 });
 
 const status = [
@@ -46,18 +47,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadBranches(filteredData);
+    store.loadNews(filteredData);
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadBranches(filteredData);
+  store.loadNews(filteredData);
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadBranches(filteredData);
+  store.loadNews(filteredData);
 };
 
 const changeStatus = (id, status) => {
@@ -65,21 +66,21 @@ const changeStatus = (id, status) => {
     id: id,
     status: status == 0 ? 1 : 0,
   };
-  store.branchChangeStatus(data);
+  store.newsChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadBranches(filteredData);
+    store.loadNews(filteredData);
   }, 1000);
 };
 
-const deleteBranchFun = (id, status) => {
+const deleteNewsFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteBranch(data);
+  store.deleteNews(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadBranches(filteredData);
+    store.loadNews(filteredData);
   }, 1000);
 };
 </script>
@@ -88,7 +89,7 @@ const deleteBranchFun = (id, status) => {
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard :title="$t('common.Branches')">
+        <VCard :title="$t('nav.news')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
@@ -114,8 +115,8 @@ const deleteBranchFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'settings-branches-add' }">
-                  {{ $t("common.add_branch") }}
+                <VBtn class="px-7" :to="{ name: 'blog-news-add' }">
+                  {{ $t("common.add_news") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->
@@ -140,10 +141,13 @@ const deleteBranchFun = (id, status) => {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">
-                  {{ $t("common.name") }}
+                  {{ $t("common.title") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.address") }}
+                  {{ $t("common.content") }}
+                </th>
+                <th scope="col">
+                  {{ $t("common.created_at") }}
                 </th>
                 <th scope="col">
                   {{ $t("common.status") }}
@@ -154,7 +158,7 @@ const deleteBranchFun = (id, status) => {
             <!-- 👉 table body -->
             <tbody>
               <tr
-                v-for="(item, index) in store.getBranches"
+                v-for="(item, index) in store.getNews"
                 :key="index"
                 style="height: 3.75rem"
               >
@@ -163,12 +167,34 @@ const deleteBranchFun = (id, status) => {
                  {{ item.id }}
                 </td>
                 <td>
-                  {{ item.name }}
+                  <div class="d-flex align-center">
+                    <VAvatar
+                      variant="tonal"
+                      :color="resolveDataStatusVariant('actived').color"
+                      class="me-3"
+                      size="38"
+                    >
+                      <VImg
+                        v-if="item.images && item.images.length > 0"
+                        :src="getAssetUploadedFilesPath(item.images[0])"
+                      />
+                      <span v-else>{{ avatarText(item.title) }}</span>
+                    </VAvatar>
+                    {{ item.title }}
+                  </div>
                 </td>
 
                 <td class="pt-2 pb-3">
-                  <div v-html="item.address"></div>
+                  <div v-html="item.content.substring(0, 100) + '...'">
+                    </div>
                 </td>
+                <td class="pt-2 pb-3">
+                  {{
+                    $filters.moment(item.created_at, "YYYY-MM-DD, h:mm:ss A") ||
+                    "unknown"
+                  }}
+                </td>
+
                 <!-- 👉 Status -->
                 <td>
                   <VChip
@@ -199,7 +225,7 @@ const deleteBranchFun = (id, status) => {
                         <VListItem
                           :title="$t('common.edit')"
                           :to="{
-                            name: 'settings-branches-edit-id',
+                            name: 'blog-news-edit-id',
                             params: { id: item.id },
                           }"
                         />
@@ -229,7 +255,6 @@ const deleteBranchFun = (id, status) => {
                             isDataModalVisible = item;
                           "
                         />
-                      
                       </VList>
                     </VMenu>
                   </VBtn>
@@ -238,7 +263,7 @@ const deleteBranchFun = (id, status) => {
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getBranches.length">
+            <tfoot v-show="!store.getNews.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -325,7 +350,7 @@ const deleteBranchFun = (id, status) => {
                 <VBtn
                   color="error"
                   @click="
-                    deleteBranchFun(
+                    deleteNewsFun(
                       isDataModalVisible.id,
                       isDataModalVisible.is_active
                     )
@@ -339,7 +364,7 @@ const deleteBranchFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalBranches.currentPage"
+            v-if="store.getTotalNews.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -353,10 +378,10 @@ const deleteBranchFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalBranches.currentPage"
+              v-model="store.getTotalNews.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalBranches.totalPages"
+              :length="store.getTotalNews.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

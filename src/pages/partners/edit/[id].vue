@@ -1,5 +1,5 @@
 <script setup>
-import { useBooksStore } from "@/stores/books";
+import { usePartnersStore } from "@/stores/partners";
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -22,29 +22,23 @@ import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
 const router = useRouter();
-const store = useBooksStore();
+const route = useRoute();
+const store = usePartnersStore();
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
-const types = ref([
-  { id: "business_support_center", title: t("common.business_support_center") },
-  { id: "yemen_business_center", title: t("common.yemen_business_center") },
-]);
 
 const formData = ref({
-  type: null,
-  title_en: "",
-  title_ar: "",
-  subtitle_en: "",
-  subtitle_ar: "",
+  id: route.params.id,
+  name_ar: "",
+  name_en: "",
+  url: "",
   images: [],
-  file: [],
 });
 
 const loadImages = (e) => {
   const files = e.target.files;
   if (files.length > 0) {
-    images.value = [];
     images.value.push(...files);
   }
 };
@@ -59,24 +53,31 @@ const onSubmitForm = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
       var data = {
-        type: formData.value.type,
-        title_en: formData.value.title_en,
-        title_ar: formData.value.title_ar,
-        subtitle_en: formData.value.subtitle_en,
-        subtitle_ar: formData.value.subtitle_ar,
-        image: images.value && images.value.length > 0 ? images.value[0] : null,
-        file: formData.value.file && formData.value.file.length > 0 ? formData.value.file[0] : null,
+        id: formData.value.id,
+        name_ar: formData.value.name_ar,
+        name_en: formData.value.name_en,
+        url: formData.value.url,
+        logo: images.value && images.value.length > 0 ? images.value[0] : [],
       };
-      store.storeBook(data).then((res) => {
+      store.updatePartner(data).then((res) => {
         router.push({
-          name: "books",
+          name: "partners",
         });
       });
     }
   });
 };
 
-onMounted(() => {});
+onMounted(() => {
+  store.loadPartnerDetails(route.params.id).then(() => {
+    formData.value.name_ar = store.getPartnerDetails.name_ar;
+    formData.value.name_en = store.getPartnerDetails.name_en;
+    formData.value.url = store.getPartnerDetails.url;
+    images.value = store.getPartnerDetails.logo
+      ? [store.getPartnerDetails.logo]
+      : [];
+  });
+});
 </script>
 
 <template>
@@ -98,7 +99,7 @@ onMounted(() => {});
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.add_book") }}
+              {{ $t("common.edit_partner") }}
             </h4>
           </div>
           <VDivider />
@@ -128,71 +129,41 @@ onMounted(() => {});
                 </VRow>
                 <VFileInput
                   accept="image/*"
-                  :label="$t('common.Cover Photo')"
+                  :label="$t('common.images')"
                   v-model="formData.images"
                   @change="loadImages"
                   class="hide-input"
                 />
               </VCol>
-              <VCol md="12" cols="12">
-                <VFileInput
-                  accept=".pdf,.doc,.docx"
-                  :label="$t('common.Book file')"
-                  v-model="formData.file"
-                />
-              </VCol>
               <VCol md="6" cols="12">
                 <VTextField
-                  v-model="formData.title_ar"
-                  :label="$t('common.title_ar')"
+                  v-model="formData.name_ar"
+                  :label="$t('common.name_ar')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
               <VCol md="6" cols="12">
                 <VTextField
-                  v-model="formData.title_en"
-                  :label="$t('common.title_en')"
+                  v-model="formData.name_en"
+                  :label="$t('common.name_en')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
               <VCol md="6" cols="12">
                 <VTextField
-                  v-model="formData.subtitle_ar"
+                  v-model="formData.url"
                   :label="
-                    $t('common.A simple description of the book in Arabic')
+                    $t('common.url') + ' ' + '( ' + $t('common.Optional') + ' )'
                   "
-                  :rules="[requiredValidator]"
+                  :rules="[urlValidator]"
                 />
               </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.subtitle_en"
-                  :label="
-                    $t('common.A simple description of the book in English')
-                  "
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VSelect
-                  v-model="formData.type"
-                  :placeholder="$t('common.Place of issue')"
-                  :items="types"
-                  item-title="title"
-                  item-value="id"
-                  clearable
-                  clear-icon="tabler-x"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
+
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
                 <VBtn
                   type="submit"
-                  :disabled="
-                    (!formData.images.length && !images.length) ||
-                    !formData.file.length
-                  "
+                  :disabled="!formData.images.length && !images.length"
                   >{{ $t("common.save") }}</VBtn
                 >
 
@@ -200,7 +171,7 @@ onMounted(() => {});
                   color="secondary"
                   variant="tonal"
                   type="reset"
-                  :to="{ name: 'books' }"
+                  :to="{ name: 'partners' }"
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>
