@@ -30,9 +30,24 @@
     "messages": "Email Messages",
     "about_us": "About Us",
     "business_support_center": "Business Support Center",
-    "yemen_business_center": "Yemen Business Center"
+    "yemen_business_center": "Yemen Business Center",
+    "Management": "Management",
+    "General Assembly":  "General Assembly",
+    "Board of Directors": "Board of Directors",
+    "Executive Management": "Executive Management",
+    "Board Committees": "Board Committees"
+  
   },
   "common": {
+    "employees":  "Employees",
+    "add_committee": "Add New Committee",
+    "edit_committee": "Edit Committee",
+    "job_ar": "Job in Arabic",
+    "job_en":  "Job in English",
+    "company_ar":  "Company in Arabic",
+    "company_en": "Company in English",
+    "add_employee":  "Add New Employee",
+    "edit_employee": "Edit Employee",
     "total_member": "Total Members",
     "total_conferences": "Total Conferences",
     "total_seminar": "Total Seminars",
@@ -73,6 +88,7 @@
     "content_ar": "Content in Arabic",
     "content_en": "Content in English",
     "images": "Images",
+    "image": "Image",
     "title": "Title",
     "content": "Content",
     "created_at": "Creation Date",

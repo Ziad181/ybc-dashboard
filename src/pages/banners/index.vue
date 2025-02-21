@@ -31,13 +31,17 @@ const status = [
 ];
 
 const sections = [
-  {
-    title: t("nav.Solar Energy"),
-    id: "solar-energy",
+{
+    title: t("nav.home"),
+    id: "home",
   },
   {
-    title: t("nav.Electricity"),
-    id: "electricity",
+    title: t("nav.business_support_center"),
+    id: "business_support_center",
+  },
+  {
+    title: t("nav.yemen_business_center"),
+    id: "yemen_business_center",
   },
 ];
 
@@ -191,7 +195,7 @@ const deleteBannerFun = (id, status) => {
               >
                 <!-- 👉 Order -->
                 <td>
-                  {{ item.id }}
+                  {{ index + 1  }}
                 </td>
                 <td>
                   <div class="d-flex align-center">

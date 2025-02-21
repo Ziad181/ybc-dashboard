@@ -167,7 +167,7 @@ const deletePartnershipFun = (id, status) => {
               >
                 <!-- 👉 Order -->
                 <td>
-                 {{ item.id }}
+                 {{ index + 1  }}
                 </td>
                 <td>
                   <div class="d-flex align-center">

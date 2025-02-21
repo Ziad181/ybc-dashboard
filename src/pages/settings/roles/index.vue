@@ -140,7 +140,7 @@ const deleteRole = (id) => {
                 style="height: 3.75rem"
               >
                 <td>
-                 {{ item.id }}
+                 {{ index + 1  }}
                 </td>
                 <td>
                   {{ item.name }}

@@ -58,6 +58,29 @@ export default [{
   ],
 },
 {
+  title: 'Management',
+  icon: { icon: 'tabler-subtask' },
+  permissions: [permissions.readBlog],
+  children: [
+    {
+      title: 'General Assembly',
+      to: 'management-general-assembly',
+    },
+    {
+      title: 'Board of Directors',
+      to: 'management-board-of-directors',
+    },
+    {
+      title: 'Executive Management',
+      to: 'management-executive-management',
+    },
+    {
+      title: 'Board Committees',
+      to: 'management-board-committees',
+    },
+  ],
+},
+{
   title: 'partners',
   icon: {
     icon: 'tabler-users'

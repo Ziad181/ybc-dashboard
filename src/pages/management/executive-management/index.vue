@@ -1,14 +1,15 @@
 <script setup>
-import { useArticlesStore } from "@/stores/articles";
+import { useManagementStore } from "@/stores/management";
 import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
-const store = useArticlesStore();
+const store = useManagementStore();
 
 const filteredData = ref({
+  type: "executive_management",
   search: "",
   status: null,
   page: 1,
@@ -16,7 +17,7 @@ const filteredData = ref({
 });
 
 onMounted(() => {
-  store.loadArticles(filteredData);
+  store.loadEmployees(filteredData);
 });
 
 const status = [
@@ -47,18 +48,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadEmployees(filteredData);
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadArticles(filteredData);
+  store.loadEmployees(filteredData);
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadArticles(filteredData);
+  store.loadEmployees(filteredData);
 };
 
 const changeStatus = (id, status) => {
@@ -66,21 +67,21 @@ const changeStatus = (id, status) => {
     id: id,
     status: status == 0 ? 1 : 0,
   };
-  store.articleChangeStatus(data);
+  store.employeeChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadEmployees(filteredData);
   }, 1000);
 };
 
-const deleteArticleFun = (id, status) => {
+const deleteEmployeeFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteArticle(data);
+  store.deleteEmployee(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadEmployees(filteredData);
   }, 1000);
 };
 </script>
@@ -89,7 +90,7 @@ const deleteArticleFun = (id, status) => {
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard :title="$t('nav.articles')">
+        <VCard :title="$t('nav.Board of Directors')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
@@ -115,8 +116,8 @@ const deleteArticleFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'blog-articles-add' }">
-                  {{ $t("common.add_article") }}
+                <VBtn class="px-7" :to="{ name: 'management-executive-management-add' }">
+                  {{ $t("common.add_employee") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->
@@ -141,15 +142,11 @@ const deleteArticleFun = (id, status) => {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">
-                  {{ $t("common.The name of the author of the article") }}
+                  {{ $t("common.name") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.title") }}
+                  {{ $t("common.job") }}
                 </th>
-                <th scope="col">
-                  {{ $t("common.content") }}
-                </th>
-
                 <th scope="col">
                   {{ $t("common.created_at") }}
                 </th>
@@ -162,7 +159,7 @@ const deleteArticleFun = (id, status) => {
             <!-- 👉 table body -->
             <tbody>
               <tr
-                v-for="(item, index) in store.getArticles"
+                v-for="(item, index) in store.getEmployees"
                 :key="index"
                 style="height: 3.75rem"
               >
@@ -188,10 +185,7 @@ const deleteArticleFun = (id, status) => {
                   </div>
                 </td>
                 <td class="pt-2 pb-3">
-                  <div v-html="item.title"></div>
-                </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.content.substring(0, 100) + '...'"></div>
+                  <div v-html="item.job"></div>
                 </td>
                 <td class="pt-2 pb-3">
                   {{
@@ -230,7 +224,7 @@ const deleteArticleFun = (id, status) => {
                         <VListItem
                           :title="$t('common.edit')"
                           :to="{
-                            name: 'blog-articles-edit-id',
+                            name: 'management-executive-management-edit-id',
                             params: { id: item.id },
                           }"
                         />
@@ -268,7 +262,7 @@ const deleteArticleFun = (id, status) => {
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getArticles.length">
+            <tfoot v-show="!store.getEmployees.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -355,7 +349,7 @@ const deleteArticleFun = (id, status) => {
                 <VBtn
                   color="error"
                   @click="
-                    deleteArticleFun(
+                    deleteEmployeeFun(
                       isDataModalVisible.id,
                       isDataModalVisible.is_active
                     )
@@ -369,7 +363,7 @@ const deleteArticleFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalArticles.currentPage"
+            v-if="store.getTotalEmployees.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -383,10 +377,10 @@ const deleteArticleFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalArticles.currentPage"
+              v-model="store.getTotalEmployees.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalArticles.totalPages"
+              :length="store.getTotalEmployees.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

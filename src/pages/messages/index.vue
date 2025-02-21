@@ -141,7 +141,7 @@ const onper_pageChange = (data) => {
               >
                 <!-- 👉 Order -->
                 <td>
-                  {{ item.id }}
+                  {{ index + 1  }}
                 </td>
                 <td>
                   {{ item.name }}

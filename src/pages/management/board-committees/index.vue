@@ -1,12 +1,12 @@
 <script setup>
-import { useArticlesStore } from "@/stores/articles";
+import { useBoardCommitteesStore } from "@/stores/boardCommittees";
 import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
-const store = useArticlesStore();
+const store = useBoardCommitteesStore();
 
 const filteredData = ref({
   search: "",
@@ -16,7 +16,7 @@ const filteredData = ref({
 });
 
 onMounted(() => {
-  store.loadArticles(filteredData);
+  store.loadCommittees(filteredData);
 });
 
 const status = [
@@ -47,18 +47,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadCommittees(filteredData);
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadArticles(filteredData);
+  store.loadCommittees(filteredData);
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadArticles(filteredData);
+  store.loadCommittees(filteredData);
 };
 
 const changeStatus = (id, status) => {
@@ -66,21 +66,21 @@ const changeStatus = (id, status) => {
     id: id,
     status: status == 0 ? 1 : 0,
   };
-  store.articleChangeStatus(data);
+  store.committeeChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadCommittees(filteredData);
   }, 1000);
 };
 
-const deleteArticleFun = (id, status) => {
+const deleteCommitteeFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteArticle(data);
+  store.deleteCommittee(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    store.loadCommittees(filteredData);
   }, 1000);
 };
 </script>
@@ -89,7 +89,7 @@ const deleteArticleFun = (id, status) => {
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard :title="$t('nav.articles')">
+        <VCard :title="$t('nav.Board Committees')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
@@ -115,8 +115,11 @@ const deleteArticleFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'blog-articles-add' }">
-                  {{ $t("common.add_article") }}
+                <VBtn
+                  class="px-7"
+                  :to="{ name: 'management-board-committees-add' }"
+                >
+                  {{ $t("common.add_committee") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->
@@ -141,15 +144,14 @@ const deleteArticleFun = (id, status) => {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">
-                  {{ $t("common.The name of the author of the article") }}
-                </th>
-                <th scope="col">
                   {{ $t("common.title") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.content") }}
+                  {{ $t("common.description") }}
                 </th>
-
+                <th scope="col">
+                  {{ $t("common.employees") }}
+                </th>
                 <th scope="col">
                   {{ $t("common.created_at") }}
                 </th>
@@ -162,36 +164,32 @@ const deleteArticleFun = (id, status) => {
             <!-- 👉 table body -->
             <tbody>
               <tr
-                v-for="(item, index) in store.getArticles"
+                v-for="(item, index) in store.getCommittees"
                 :key="index"
                 style="height: 3.75rem"
               >
                 <!-- 👉 Order -->
                 <td>
-                  {{ index + 1  }}
+                  {{ index + 1 }}
                 </td>
                 <td>
-                  <div class="d-flex align-center">
-                    <VAvatar
-                      variant="tonal"
-                      :color="resolveDataStatusVariant('actived').color"
-                      class="me-3"
-                      size="38"
-                    >
-                      <VImg
-                        v-if="item.image"
-                        :src="getAssetUploadedFilesPath(item.image)"
-                      />
-                      <span v-else>{{ avatarText(item.name) }}</span>
-                    </VAvatar>
-                    {{ item.name }}
-                  </div>
+                  {{ item.title }}
+                </td>
+                <td>
+                  {{ item.description }}
                 </td>
                 <td class="pt-2 pb-3">
-                  <div v-html="item.title"></div>
-                </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.content.substring(0, 100) + '...'"></div>
+                 <div class="d-flex flex-wrap gap-2">
+                  <VChip
+                    v-for="(employee, employeeIndex) in item.employees"
+                    :key="employeeIndex"
+                    label
+                    size="small"
+                    class="text-capitalize"
+                  >
+                    {{ employee.name }}
+                  </VChip>
+                 </div>
                 </td>
                 <td class="pt-2 pb-3">
                   {{
@@ -230,7 +228,7 @@ const deleteArticleFun = (id, status) => {
                         <VListItem
                           :title="$t('common.edit')"
                           :to="{
-                            name: 'blog-articles-edit-id',
+                            name: 'management-board-committees-edit-id',
                             params: { id: item.id },
                           }"
                         />
@@ -268,7 +266,7 @@ const deleteArticleFun = (id, status) => {
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getArticles.length">
+            <tfoot v-show="!store.getCommittees.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -355,7 +353,7 @@ const deleteArticleFun = (id, status) => {
                 <VBtn
                   color="error"
                   @click="
-                    deleteArticleFun(
+                    deleteCommitteeFun(
                       isDataModalVisible.id,
                       isDataModalVisible.is_active
                     )
@@ -369,7 +367,7 @@ const deleteArticleFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalArticles.currentPage"
+            v-if="store.getTotalCommittees.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -383,10 +381,10 @@ const deleteArticleFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalArticles.currentPage"
+              v-model="store.getTotalCommittees.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalArticles.totalPages"
+              :length="store.getTotalCommittees.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

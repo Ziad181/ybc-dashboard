@@ -54,7 +54,7 @@ onMounted(() => {
               >
                 <!-- 👉 Order -->
                 <td>
-                  {{ item.id }}
+                  {{ index + 1  }}
                 </td>
                 <td>
                   {{ item.section_name }}
