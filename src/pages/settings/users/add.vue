@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import defaultImage from "@images/default-image.png";
+import defaultImage from "@images/default-image.webp";
 import { useI18n } from "vue-i18n";
 import { useUserStore } from "@/stores/user";
 import { useRoleStore } from "@/stores/role";

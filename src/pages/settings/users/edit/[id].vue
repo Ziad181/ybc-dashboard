@@ -3,7 +3,7 @@
 import i18n from "@/plugins/i18n";
 import { useRoleStore } from "@/stores/role";
 import { useUserStore } from "@/stores/user";
-import defaultImage from "@images/default-image.png";
+import defaultImage from "@images/default-image.webp";
 import {
   emailValidator,
   integerValidator,

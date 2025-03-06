@@ -17,13 +17,13 @@ html {
 
 .loading-logo {
   position: absolute;
-  inset-block-start: 40%;
-  inset-inline-start: calc(50% - 45px);
+  inset-block-start: 38%;
+  inset-inline-start: calc(50% -  80px);
 
 }
 
 .loading-logo img {
-  inline-size: 90px;
+  inline-size: 170px;
 }
 .loading {
   position: absolute;

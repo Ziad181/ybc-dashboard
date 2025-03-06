@@ -4,7 +4,7 @@ import { VIcon } from 'vuetify/components'
 // ❗ Logo SVG must be imported with ?raw suffix
 import { defineThemeConfig } from '@core'
 import { Skins } from '@core/enums'
-import logo from '@images/logo.svg?raw'
+import logo from '@images/logo.png?raw'
 import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layouts/enums'
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({

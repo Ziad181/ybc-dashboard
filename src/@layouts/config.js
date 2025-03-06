@@ -12,7 +12,7 @@ export const config = {
   app: {
     title: 'Title',
     logo: h('img', {
-      src: '/src/assets/logo.svg'
+      src: '/src/assets/logo.png'
     }),
 
     // logo: () => h('img', { src: 'assets/colored-logo.png' }, null),

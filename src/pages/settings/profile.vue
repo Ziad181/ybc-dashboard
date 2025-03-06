@@ -1,6 +1,6 @@
 <script setup>
 import { useProfileStore } from "@/stores/profile";
-import defaultImage from "@images/default-image.png";
+import defaultImage from "@images/default-image.webp";
 import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from "vue-router";
 import { onMounted, ref, watch } from "vue";

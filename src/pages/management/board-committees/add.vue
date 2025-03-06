@@ -19,7 +19,7 @@ import {
   urlValidator,
 } from "@validators";
 import i18n from "@/plugins/i18n";
-import defaultImage from "@images/default-image.png";
+import defaultImage from "@images/default-image.webp";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //

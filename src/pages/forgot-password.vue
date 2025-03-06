@@ -24,7 +24,7 @@ const form = ref({ email: "" });
         <VCardItem class="justify-center">
           <template #prepend>
             <div class="d-flex">
-              <VNodeRenderer :nodes="themeConfig.app.logo" />
+              <img src="/logo.png" alt="Logo" />
             </div>
           </template>
 
