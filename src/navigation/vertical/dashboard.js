@@ -81,6 +81,21 @@ export default [{
   ],
 },
 {
+  title: 'Members',
+  icon: { icon: 'tabler-users' },
+  permissions: [permissions.readBlog],
+  children: [
+    {
+      title: 'Club members',
+      to: 'members-club-members',
+    },
+    {
+      title: 'Business Support Center members',
+      to: 'members-business-support',
+    },
+  ],
+},
+{
   title: 'partners',
   icon: {
     icon: 'tabler-users'

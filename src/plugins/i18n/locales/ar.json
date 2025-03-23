@@ -35,9 +35,16 @@
     "General Assembly": "الجمعية العمومية",
     "Board of Directors": "مجلس الإدارة",
     "Executive Management": "الإدارة التنفيذية",
-    "Board Committees": "لجان مجلس الادارة"
+    "Board Committees": "لجان مجلس الادارة",
+    "Members": "الأعضاء",
+    "Club members": "أعضاء النادي",
+    "Business Support Center members":  "أعضاء مركز دعم الأعمال"
   },
   "common": {
+    "Rejection confirmation": "تاكيد الرفض",
+    "Accept confirmation": "تاكيد القبول",
+    "rejection_confirmation_text": "هل انت متاكد من عملية الرفض ؟",
+    "accept_confirmation_text": "هل انت متاكد من عملية القبول ؟",
     "employees": "الموظفين",
     "add_committee": "إضافة لجنة",
     "edit_committee": "تعديل اللجنة",
