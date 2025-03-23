@@ -224,6 +224,13 @@ const changeStatus = (id, status) => {
                     <VMenu activator="parent">
                       <VList>
                         <VListItem
+                          :title="$t('common.view_details')"
+                          :to="{
+                            name: 'members-club-members-view-id',
+                            params: { id: item.id },
+                          }"
+                        />
+                        <VListItem
                           v-if="item.status == 'pending'"
                           :title="$t('common.rejection')"
                           @click="
