@@ -235,3 +235,30 @@ table {
 .app-logo img{
   inline-size: 80px;
 }
+.v3dp__input_wrapper{
+  & input{
+    width: 100%;
+    color: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    letter-spacing: 0.009375em;
+    opacity: 0.87;
+    min-height: var(--v-input-control-height, 40px);
+    padding-inline-start: 16px;
+    padding-inline-end: 16px;
+    padding-top: 0;
+    padding-bottom: 0;
+    width: 100%;
+    border: 1px solid rgba(#000000, 0.38);
+    border-radius: 6px;
+    outline: none;
+    box-shadow: none;
+    // color: #000000;
+    &:focus{
+      border: 1px solid rgba(#000000, 0.38);
+      outline: none;
+      box-shadow: none;
+    }
+
+  }
+}

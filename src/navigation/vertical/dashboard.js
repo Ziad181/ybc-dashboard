@@ -17,6 +17,14 @@ export default [{
   to: 'banners',
   permissions: [permissions.readHomePage],
 },
+{
+  title: 'activities',
+  icon: {
+    icon: 'tabler-activity'
+  },
+  to: 'activities',
+  permissions: [permissions.readHomePage],
+},
 
 {
   title: 'about_us',

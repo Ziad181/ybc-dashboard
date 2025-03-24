@@ -38,9 +38,21 @@
     "Board Committees": "لجان مجلس الادارة",
     "Members": "الأعضاء",
     "Club members": "أعضاء النادي",
-    "Business Support Center members": "أعضاء مركز دعم الأعمال"
+    "Business Support Center members": "أعضاء مركز دعم الأعمال",
+    "activities": "الأنشطة"
   },
   "common": {
+    "edit_activity": "تعديل النشاط",
+    "conferences": "المؤتمرات",
+    "flights": "الرحلات التجارية",
+    "workshops": "الندوات وورش العمل",
+    "social": "الأنشطة الاجتماعية",
+    "research": "البحوث والدراسات",
+    "ceo": "استطلاع المدراء التنفذيين",
+    "available": "متاح",
+    "Not available": "غير متاح",
+    "Activity date": "تاريخ النشاط",
+    "add_activity": "إضافة نشاط",
     "license": "الرخصة",
     "Attach the project logo": "إرفاق شعار المشروع",
     "Attach the license, if any": "إرفاق الرخصة إن وجدت",
