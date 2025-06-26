@@ -34,7 +34,8 @@ const contactDetailForm = ref({
   facebook: null,
   twitter: null,
   instagram: null,
-  snapchat: null,
+  linkedin: null,
+  youtube: null,
   address_ar: null,
   address_en: null,
 });
@@ -50,7 +51,8 @@ watch(getContactDetails, () => {
     contactDetailForm.value.facebook = getContactDetails.value.facebook;
     contactDetailForm.value.twitter = getContactDetails.value.twitter;
     contactDetailForm.value.instagram = getContactDetails.value.instagram;
-    contactDetailForm.value.snapchat = getContactDetails.value.snapchat;
+    contactDetailForm.value.linkedin = getContactDetails.value.linkedin;
+    contactDetailForm.value.youtube = getContactDetails.value.youtube;
     contactDetailForm.value.address_ar = getContactDetails.value.address_ar;
     contactDetailForm.value.address_en = getContactDetails.value.address_en;
   }
@@ -67,7 +69,8 @@ onMounted(() => {
     contactDetailForm.value.facebook = getContactDetails.value.facebook;
     contactDetailForm.value.twitter = getContactDetails.value.twitter;
     contactDetailForm.value.instagram = getContactDetails.value.instagram;
-    contactDetailForm.value.snapchat = getContactDetails.value.snapchat;
+    contactDetailForm.value.linkedin = getContactDetails.value.linkedin;
+    contactDetailForm.value.youtube = getContactDetails.value.youtube;
     contactDetailForm.value.address_ar = getContactDetails.value.address_ar;
     contactDetailForm.value.address_en = getContactDetails.value.address_en;
   });
@@ -144,6 +147,13 @@ const onSubmitForm = () => {
 
               <VCol md="6" cols="12">
                 <VTextField
+                  v-model="contactDetailForm.youtube"
+                  :label="$t('common.youtube')"
+                  :rules="[requiredValidator, urlValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
                   v-model="contactDetailForm.facebook"
                   :label="$t('common.facebook')"
                   :rules="[requiredValidator, urlValidator]"
@@ -165,8 +175,8 @@ const onSubmitForm = () => {
               </VCol>
               <VCol md="6" cols="12">
                 <VTextField
-                  v-model="contactDetailForm.snapchat"
-                  :label="$t('common.snapchat')"
+                  v-model="contactDetailForm.linkedin"
+                  :label="$t('common.linkedin')"
                   :rules="[requiredValidator, urlValidator]"
                 />
               </VCol>

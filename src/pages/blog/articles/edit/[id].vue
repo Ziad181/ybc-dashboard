@@ -32,6 +32,8 @@ const formData = ref({
   id: route.params.id,
   name_en: "",
   name_ar: "",
+    desc_author_article_en: "",
+  desc_author_article_ar: "",
   title_en: "",
   title_ar: "",
   content_en: "",
@@ -60,6 +62,8 @@ const onSubmitForm = () => {
         id: formData.value.id,
         name_en: formData.value.name_en,
         name_ar: formData.value.name_ar,
+        desc_author_article_en:  formData.value.desc_author_article_en,
+        desc_author_article_ar: formData.value.desc_author_article_ar,
         title_en: formData.value.title_en,
         title_ar: formData.value.title_ar,
         content_en: formData.value.content_en,
@@ -81,6 +85,8 @@ onMounted(() => {
     formData.value.name_en = store.getArticleDetails.name_en;
     formData.value.title_ar = store.getArticleDetails.title_ar;
     formData.value.title_en = store.getArticleDetails.title_en;
+    formData.value.desc_author_article_ar = store.getArticleDetails.desc_author_article_ar;
+    formData.value.desc_author_article_en = store.getArticleDetails.desc_author_article_en;
     formData.value.content_ar = store.getArticleDetails.content_ar;
     formData.value.content_en = store.getArticleDetails.content_en;
     images.value = store.getArticleDetails.image
@@ -160,6 +166,27 @@ onMounted(() => {
                   :label="
                     $t(
                       'common.The name of the author of the article in English'
+                    )
+                  "
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+                <VCol md="6" cols="12">
+                <v-textarea
+                  v-model="formData.desc_author_article_ar"
+                  :label="
+                    $t('common.Article Publisher Description in Arabic')
+                  "
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <v-textarea
+                  v-model="formData.desc_author_article_en"
+                  :label="
+                    $t(
+                      'common.Article Publisher Description in English'
                     )
                   "
                   :rules="[requiredValidator]"

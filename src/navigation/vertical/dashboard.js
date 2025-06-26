@@ -59,8 +59,8 @@ export default [{
       to: 'blog-articles',
     },
     {
-      title: 'books',
-      to: 'blog-books',
+      title: 'The Releases',
+      to: 'blog-releases',
     },
 
   ],
@@ -102,6 +102,14 @@ export default [{
       to: 'members-business-support',
     },
   ],
+},
+{
+  title: 'organizational-structure',
+  icon: {
+    icon: 'tabler-hierarchy'
+  },
+  to: 'organizational-structure',
+  permissions: [permissions.readClients],
 },
 {
   title: 'partners',

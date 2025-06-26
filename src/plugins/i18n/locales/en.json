@@ -15,6 +15,7 @@
     "news": "News",
     "articles": "Articles",
     "books": "Books",
+    "The Releases": "The Releases",
     "projects": "Projects",
     "partnerships": "Partnerships",
     "partners": "Partners",
@@ -35,10 +36,14 @@
     "General Assembly":  "General Assembly",
     "Board of Directors": "Board of Directors",
     "Executive Management": "Executive Management",
-    "Board Committees": "Board Committees"
+    "Board Committees": "Board Committees",
+    "Yemeni Business Club": "Yemeni Business Club"
   
   },
   "common": {
+    "Article Publisher Description in Arabic":  "Article Publisher Description in Arabic",
+    "Article Publisher Description in English":"Article Publisher Description in English",
+    "registration_link":  "Registration Link",
     "employees":  "Employees",
     "add_committee": "Add New Committee",
     "edit_committee": "Edit Committee",
@@ -54,6 +59,7 @@
     "total_workshops": "Total Workshops",
     "logo": "Logo",
     "edit_book": "Edit Book",
+    "edit_release": "Edit Release",
     "A simple description of the book in Arabic": "A simple description of the book in Arabic",
     "A simple description of the book in English": "A simple description of the book in English",
     "Place of issue": "Place of issue",
@@ -64,6 +70,7 @@
     "The name of the author of the article in Arabic": "The name of the author of the article in Arabic",
     "The name of the author of the article in English": "The name of the author of the article in English",
     "add_book": "Add New Book",
+    "add_release":  "Add New Release",
     "address_ar": "Address in Arabic",
     "address_en": "Address in English",
     "add_content": "Add Content",

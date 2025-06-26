@@ -30,6 +30,8 @@ const images = ref([]);
 const formData = ref({
   name_en: "",
   name_ar: "",
+  desc_author_article_en: "",
+  desc_author_article_ar: "",
   title_en: "",
   title_ar: "",
   content_en: "",
@@ -57,6 +59,8 @@ const onSubmitForm = () => {
       var data = {
         name_en: formData.value.name_en,
         name_ar: formData.value.name_ar,
+        desc_author_article_en: formData.value.desc_author_article_en,
+        desc_author_article_ar: formData.value.desc_author_article_ar,
         title_en: formData.value.title_en,
         title_ar: formData.value.title_ar,
         content_en: formData.value.content_en,
@@ -151,6 +155,31 @@ onMounted(() => {});
                   :rules="[requiredValidator]"
                 />
               </VCol>
+
+
+
+              <VCol md="6" cols="12">
+                <v-textarea
+                  v-model="formData.desc_author_article_ar"
+                  :label="
+                    $t('common.Article Publisher Description in Arabic')
+                  "
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <v-textarea
+                  v-model="formData.desc_author_article_en"
+                  :label="
+                    $t(
+                      'common.Article Publisher Description in English'
+                    )
+                  "
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+
 
               <VCol md="6" cols="12">
                 <VTextField

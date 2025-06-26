@@ -89,6 +89,41 @@ export const useUtilityStore = defineStore({
       })
     },
 
+    async updateOrganizationalStructure(data) {
+      store.loadingStart()
+      return await this.$http.post(`/admin/setting/organizational-structure/update`, data,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        store.loadingFinish()
+        if (response.status === 200) {
+          this.$notificationMessage({
+            title: this.$t('success_messages.edit_successfully'),
+            type: "success",
+          });
+          return true
+        }
+
+      }).catch(error => {
+        store.loadingFinish()
+        throw error
+      }).then(response => {
+        store.loadingFinish()
+        if (response.status === 200) {
+          this.$notificationMessage({
+            title: this.$t('success_messages.edit_successfully'),
+            type: "success",
+          });
+          return true
+        }
+
+      }).catch(error => {
+        store.loadingFinish()
+        throw error
+      })
+    },
+
     async loadDashboard() {
       store.loadingStart()
       return await this.$http.get(`/admin/dashboard`).then(response => {

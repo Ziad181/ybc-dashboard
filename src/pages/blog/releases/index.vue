@@ -115,8 +115,8 @@ const deleteBookFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'blog-books-add' }">
-                  {{ $t("common.add_book") }}
+                <VBtn class="px-7" :to="{ name: 'blog-releases-add' }">
+                  {{ $t("common.add_release") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->
@@ -224,7 +224,7 @@ const deleteBookFun = (id, status) => {
                         <VListItem
                           :title="$t('common.edit')"
                           :to="{
-                            name: 'blog-books-edit-id',
+                            name: 'blog-releases-edit-id',
                             params: { id: item.id },
                           }"
                         />

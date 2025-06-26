@@ -40,6 +40,9 @@ const formData = ref({
   description_ar: "",
   description_en: "",
   images: [],
+  facebook_link: "",
+  instagram_link: "",
+  linkedin_link: "",
 });
 const loadImages = (e) => {
   const files = e.target.files;
@@ -70,6 +73,9 @@ const onSubmitForm = () => {
         description_ar: formData.value.description_ar,
         description_en: formData.value.description_en,
         image: images.value && images.value.length > 0 ? images.value[0] : null,
+        facebook_link: formData.value.facebook_link,
+        instagram_link: formData.value.instagram_link,
+        linkedin_link: formData.value.linkedin_link,
       };
       store.updateEmployee(data).then((res) => {
         router.push({
@@ -94,6 +100,9 @@ onMounted(() => {
     images.value = store.getEmployeeDetails.image
       ? [store.getEmployeeDetails.image]
       : [];
+    formData.value.facebook_link = store.getEmployeeDetails.facebook_link;
+    formData.value.instagram_link = store.getEmployeeDetails.instagram_link;
+    formData.value.linkedin_link = store.getEmployeeDetails.linkedin_link;
   });
 });
 </script>
@@ -181,6 +190,27 @@ onMounted(() => {
                   v-model="formData.job_en"
                   :label="$t('common.job_en')"
                   :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="formData.facebook_link"
+                  :label="$t('common.facebook_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="formData.instagram_link"
+                  :label="$t('common.instagram_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="formData.linkedin_link"
+                  :label="$t('common.linkedin_link')"
+                  :rules="[urlValidator]"
                 />
               </VCol>
               <!-- 👉 Form Actions -->

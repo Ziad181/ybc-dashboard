@@ -26,6 +26,7 @@ const store = useManagementStore();
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
+const companyLogo = ref([]);
 
 const formData = ref({
   type: "general_assembly",
@@ -38,7 +39,14 @@ const formData = ref({
   description_ar: "",
   description_en: "",
   images: [],
+  company_logo: "",
+  company_scope_of_work: "",
+  website_link: "",
+  facebook_link: "",
+  instagram_link: "",
+  linkedin_link: "",
 });
+
 const loadImages = (e) => {
   const files = e.target.files;
   if (files.length > 0) {
@@ -47,10 +55,24 @@ const loadImages = (e) => {
   }
 };
 
+const loadCompanyLogo = (e) => {
+  const files = e.target.files;
+  if (files.length > 0) {
+    companyLogo.value = [];
+    companyLogo.value.push(...files);
+  }
+};
+
 const removeImageByIndex = (index) => {
   images.value = Array.from(images.value);
   images.value.splice(index, 1);
   formData.value.images = images.value;
+};
+
+const removeCompanyLogoByIndex = (index) => {
+  companyLogo.value = Array.from(companyLogo.value);
+  companyLogo.value.splice(index, 1);
+  formData.value.company_logo = companyLogo.value;
 };
 
 const onSubmitForm = () => {
@@ -67,6 +89,15 @@ const onSubmitForm = () => {
         description_ar: formData.value.description_ar,
         description_en: formData.value.description_en,
         image: images.value && images.value.length > 0 ? images.value[0] : null,
+        company_logo:
+          companyLogo.value && companyLogo.value.length > 0
+            ? companyLogo.value[0]
+            : null,
+        company_scope_of_work: formData.value.company_scope_of_work,
+        website_link: formData.value.website_link,
+        facebook_link: formData.value.facebook_link,
+        instagram_link: formData.value.instagram_link,
+        linkedin_link: formData.value.linkedin_link,
       };
       store.storEmployee(data).then((res) => {
         router.push({
@@ -99,7 +130,7 @@ onMounted(() => {});
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.add_employee") }}
+              {{ $t("common.Add a member") }}
             </h4>
           </div>
           <VDivider />
@@ -139,20 +170,14 @@ onMounted(() => {});
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.name_ar"
-                  :label="
-                    $t('common.name_ar')
-                  "
+                  :label="$t('common.name_ar')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.name_en"
-                  :label="
-                    $t(
-                      'common.name_en'
-                    )
-                  "
+                  :label="$t('common.name_en')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -185,6 +210,72 @@ onMounted(() => {});
                   :rules="[requiredValidator]"
                 />
               </VCol>
+              <VCol md="12" cols="12">
+                <VRow
+                  class="my-2 p-0"
+                  v-if="companyLogo && companyLogo.length > 0"
+                >
+                  <VCol
+                    md="2"
+                    v-for="(image, index) in companyLogo"
+                    :key="index"
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="width: 100%; height: 80px; border-radius: 8px"
+                      :src="getAssetUploadedFilesPath(image)"
+                    />
+                    <VBtn
+                      color="error"
+                      icon="tabler-trash"
+                      @click="removeCompanyLogoByIndex(index)"
+                      class="remove-image"
+                    />
+                  </VCol>
+                </VRow>
+                <VFileInput
+                  accept="image/*"
+                  :label="$t('common.company_logo')"
+                  v-model="formData.company_logo"
+                  @change="loadCompanyLogo"
+                  class="hide-input"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.company_scope_of_work"
+                  :label="$t('common.company_scope_of_work')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.website_link"
+                  :label="$t('common.website_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="formData.facebook_link"
+                  :label="$t('common.facebook_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="formData.instagram_link"
+                  :label="$t('common.instagram_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="formData.linkedin_link"
+                  :label="$t('common.linkedin_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
               <VCol cols="12">
                 <label>{{ $t("common.description_ar") }}</label>
                 <div class="texteditor" dir="ltr">
@@ -215,10 +306,7 @@ onMounted(() => {});
               <VCol cols="12" class="d-flex flex-wrap gap-4">
                 <VBtn
                   type="submit"
-                  :disabled="
-                    !formData.images.length &&
-                    !images.length 
-                  "
+                  :disabled="!formData.images.length && !images.length"
                   >{{ $t("common.save") }}</VBtn
                 >
 

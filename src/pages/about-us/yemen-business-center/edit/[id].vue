@@ -18,6 +18,7 @@ const formData = ref({
   section_name_en: "",
   description_ar: "",
   description_en: "",
+  can_change_slug: false,
 });
 
 
@@ -30,6 +31,7 @@ const onSubmitForm = () => {
         section_name_en: formData.value.section_name_en,
         description_ar: formData.value.description_ar,
         description_en: formData.value.description_en,
+        can_change_slug: formData.value.can_change_slug,
       };
       store.updatePageContent(data).then((res) => {
         router.push({

@@ -30,6 +30,7 @@ const images = ref([]);
 const types = ref([
   { id: "business_support_center", title: t("nav.business_support_center") },
   { id: "yemen_business_center", title: t("nav.yemen_business_center") },
+   { id: "yemeni_business_club", title: t("nav.Yemeni Business Club") },
 ]);
 
 const formData = ref({
@@ -75,7 +76,7 @@ const onSubmitForm = () => {
       };
       store.updateBook(data).then((res) => {
         router.push({
-          name: "blog-books",
+          name: "blog-releases",
         });
       });
     }
@@ -118,7 +119,7 @@ onMounted(() => {
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.edit_book") }}
+              {{ $t("common.edit_release") }}
             </h4>
           </div>
           <VDivider />
@@ -220,7 +221,7 @@ onMounted(() => {
                   color="secondary"
                   variant="tonal"
                   type="reset"
-                  :to="{ name: 'blog-books' }"
+                  :to="{ name: 'blog-releases' }"
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>

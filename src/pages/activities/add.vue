@@ -39,6 +39,10 @@ const types = [
     id: "flights",
   },
   {
+    title: t("common.internal_and_external_relations"),
+    id: "internal_and_external_relations",
+  },
+  {
     title: t("common.workshops"),
     id: "workshops",
   },
@@ -64,6 +68,7 @@ const formData = ref({
   content_ar: "",
   images: [],
   date: null,
+  registration_link: "",
   address: "",
 });
 
@@ -201,11 +206,18 @@ onMounted(() => {});
                 />
               </VCol>
 
-              <VCol md="12" cols="12">
+              <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.address"
                   :label="$t('common.address')"
                   :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.registration_link"
+                  :label="$t('common.registration_link')"
+                  :rules="[requiredValidator, urlValidator]"
                 />
               </VCol>
               <VCol cols="12">
