@@ -42,9 +42,20 @@
     "Business Support Center members": "أعضاء مركز دعم الأعمال",
     "activities": "الأنشطة",
     "organizational-structure": "الهيكل التنظيمي",
-    "Yemeni Business Club": "نادي الأعمال اليمني"
+    "Yemeni Business Club": "نادي الأعمال اليمني",
+    "the consultants": "المستشارين",
+        "programs_and_services": "البرامج التدريبية والخدمات"
   },
   "common": {
+    "yemeni_institute": "المعهد اليمني للمديرين",
+    "business_support_center": "مركز دعم الأعمال في اليمن",
+    "file": "الملف",
+    "programs_and_services": "البرامج التدريبية والخدمات",
+    "The center": "المركز",
+    "yemeni-institute-for-managers":  "المعهد اليمني للمديرين",
+    "business-support-center": "مركز دعم الأعمال في اليمن",
+    "add_consultant": "إضافة مستشار",
+    "edit_consultant": "تعديل مستشار",
     "Article Publisher Description in Arabic": "توصيف ناشر المقالة بالعربي",
     "Article Publisher Description in English": "توصيف ناشر المقالة بالانجليزي",
     "registration_link": "رابط التسجيل",

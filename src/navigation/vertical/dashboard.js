@@ -25,7 +25,14 @@ export default [{
   to: 'activities',
   permissions: [permissions.readHomePage],
 },
-
+{
+  title: 'programs_and_services',
+  icon: {
+    icon: 'tabler-clipboard-list'
+  },
+  to: 'programs-and-services',
+  permissions: [permissions.readHomePage],
+},
 {
   title: 'about_us',
   icon: { icon: 'tabler-clipboard-text' },
@@ -85,6 +92,10 @@ export default [{
     {
       title: 'Board Committees',
       to: 'management-board-committees',
+    },
+    {
+      title: 'the consultants',
+      to: 'management-advisory-teams',
     },
   ],
 },
