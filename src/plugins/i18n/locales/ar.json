@@ -44,15 +44,17 @@
     "organizational-structure": "الهيكل التنظيمي",
     "Yemeni Business Club": "نادي الأعمال اليمني",
     "the consultants": "المستشارين",
-        "programs_and_services": "البرامج التدريبية والخدمات"
+    "programs_and_services": "البرامج التدريبية والخدمات",
+    "Advisory Team": "الفريق الاستشاري"
   },
   "common": {
+    "Employee data": "بيانات الموظفين",
     "yemeni_institute": "المعهد اليمني للمديرين",
     "business_support_center": "مركز دعم الأعمال في اليمن",
     "file": "الملف",
     "programs_and_services": "البرامج التدريبية والخدمات",
     "The center": "المركز",
-    "yemeni-institute-for-managers":  "المعهد اليمني للمديرين",
+    "yemeni-institute-for-managers": "المعهد اليمني للمديرين",
     "business-support-center": "مركز دعم الأعمال في اليمن",
     "add_consultant": "إضافة مستشار",
     "edit_consultant": "تعديل مستشار",

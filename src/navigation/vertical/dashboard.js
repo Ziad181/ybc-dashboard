@@ -94,7 +94,7 @@ export default [{
       to: 'management-board-committees',
     },
     {
-      title: 'the consultants',
+      title: 'Advisory Team',
       to: 'management-advisory-teams',
     },
   ],

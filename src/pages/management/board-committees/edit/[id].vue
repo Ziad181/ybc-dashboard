@@ -46,16 +46,61 @@ const formData = ref({
   employees: [],
 });
 
+const addNewEmployee = () => {
+  formData.value.employees.push({
+    id: null,
+    name_en: "",
+    name_ar: "",
+    job_ar: "",
+    job_en: "",
+    description_ar: "",
+    description_en: "",
+    images: [],
+    facebook_link: "",
+    instagram_link: "",
+    linkedin_link: "",
+  });
+};
+
+const loadImages = (e, employeeIndex) => {
+  const files = e.target.files;
+  if (files.length > 0) {
+    formData.value.employees[employeeIndex].images = [];
+    formData.value.employees[employeeIndex].images.push(...files);
+  }
+};
+
+const removeImageByIndex = (employeeIndex, index) => {
+  formData.value.employees[employeeIndex].images = Array.from(
+    formData.value.employees[employeeIndex].images
+  );
+  formData.value.employees[employeeIndex].images.splice(index, 1);
+};
+
 const onSubmitForm = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
+      var employees = formData.value.employees.map((item) => {
+        return {
+          name_ar: item.name_ar,
+          name_en: item.name_en,
+          job_ar: item.job_ar,
+          job_en: item.job_en,
+          description_ar: item.description_ar,
+          description_en: item.description_en,
+          image: item.images && item.images.length > 0 ? item.images[0] : null,
+          facebook_link: item.facebook_link,
+          instagram_link: item.instagram_link,
+          linkedin_link: item.linkedin_link,
+        };
+      });
       var data = {
         id: formData.value.id,
         title_en: formData.value.title_en,
         title_ar: formData.value.title_ar,
         description_ar: formData.value.description_ar,
         description_en: formData.value.description_en,
-        employees: formData.value.employees,
+        employees: employees,
       };
       store.updateCommittee(data).then((res) => {
         router.push({
@@ -73,9 +118,31 @@ onMounted(() => {
       formData.value.title_en = store.getCommitteeDetails.title_en;
       formData.value.description_ar = store.getCommitteeDetails.description_ar;
       formData.value.description_en = store.getCommitteeDetails.description_en;
-      formData.value.employees = store.getCommitteeDetails.employees.map((item) => {
-        return item.id;
-      });
+
+      if (
+        store.getCommitteeDetails.employees &&
+        store.getCommitteeDetails.employees.length > 0
+      ) {
+        formData.value.employees = store.getCommitteeDetails.employees.map(
+          (item) => {
+            return {
+              id: item.id,
+              name_ar: item.name_ar,
+              name_en: item.name_en,
+              job_ar: item.job_ar,
+              job_en: item.job_en,
+              description_ar: item.description_ar,
+              description_en: item.description_en,
+              images: item.image ? [item.image] : [],
+              facebook_link: item.facebook_link || "",
+              instagram_link: item.instagram_link || "",
+              linkedin_link: item.linkedin_link || "",
+            };
+          }
+        );
+      } else {
+        addNewEmployee();
+      }
     });
   });
 });
@@ -137,19 +204,121 @@ onMounted(() => {
                   :rules="[requiredValidator]"
                 />
               </VCol>
-              <VCol cols="12">
-                <VSelect
-                  v-model="formData.employees"
-                  :items="managementStore.getEmployees"
-                  item-title="name"
-                  item-value="id"
-                  clear-icon="tabler-x"
-                  :disabled="managementStore.getEmployees.length == 0"
-                  multiple
-                  chips
-                  :label="$t('common.employees')"
+              <VCol md="12" cols="12">
+                <h4
+                  class="text-h8 font-weight-bold"
+                  style="margin-bottom: 16px"
+                >
+                  {{ $t("common.Employee data") }}
+                </h4>
+              </VCol>
+            </VRow>
+
+            <VRow
+              v-for="(employee, employeeIndex) in formData.employees"
+              :key="employeeIndex"
+              style="
+                margin-bottom: 30px;
+                padding: 12px;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+              "
+            >
+              <VCol :cols="employeeIndex == 0 ? '12' : '11'">
+                <VRow
+                  class="my-2 p-0"
+                  v-if="employee.images && employee.images.length > 0"
+                >
+                  <VCol
+                    md="2"
+                    v-for="(image, index) in employee.images"
+                    :key="index"
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="width: 100%; height: 80px; border-radius: 8px"
+                      :src="getAssetUploadedFilesPath(image)"
+                    />
+                    <VBtn
+                      color="error"
+                      icon="tabler-trash"
+                      @click="removeImageByIndex(employeeIndex, index)"
+                      class="remove-image"
+                    />
+                  </VCol>
+                </VRow>
+                <VFileInput
+                  accept="image/*"
+                  :label="$t('common.image')"
+                  v-model="employee.images"
+                  @change="loadImages($event, employeeIndex)"
+                  class="hide-input"
+                />
+              </VCol>
+              <VCol v-if="employeeIndex > 0" cols="1" class="text-center">
+                <VBtn
+                  color="error"
+                  icon="tabler-trash"
+                  @click="formData.employees.splice(employeeIndex, 1)"
+                  class="remove-employee"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="employee.name_ar"
+                  :label="$t('common.name_ar')"
                   :rules="[requiredValidator]"
                 />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="employee.name_en"
+                  :label="$t('common.name_en')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="employee.job_ar"
+                  :label="$t('common.job_ar')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="employee.job_en"
+                  :label="$t('common.job_en')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="employee.facebook_link"
+                  :label="$t('common.facebook_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="employee.instagram_link"
+                  :label="$t('common.instagram_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
+                <VTextField
+                  v-model="employee.linkedin_link"
+                  :label="$t('common.linkedin_link')"
+                  :rules="[urlValidator]"
+                />
+              </VCol>
+            </VRow>
+            <VRow>
+              <VCol cols="12">
+                <VBtn type="button" @click="addNewEmployee">{{
+                  $t("common.add_employee")
+                }}</VBtn>
               </VCol>
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
