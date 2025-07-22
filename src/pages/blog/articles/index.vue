@@ -4,19 +4,26 @@ import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
+import { VueDraggableNext } from "vue-draggable-next";
 
 const { t } = useI18n(); //
 const store = useArticlesStore();
 
+const tableData = ref([]);
 const filteredData = ref({
   search: "",
   status: null,
   page: 1,
   per_page: 10,
 });
+const loadArticlesFun = () => {
+  store.loadArticles(filteredData).then((response) => {
+    tableData.value = store.getArticles;
+  });
+};
 
 onMounted(() => {
-  store.loadArticles(filteredData);
+  loadArticlesFun();
 });
 
 const status = [
@@ -47,18 +54,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    loadArticlesFun();
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadArticles(filteredData);
+  loadArticlesFun();
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadArticles(filteredData);
+  loadArticlesFun();
 };
 
 const changeStatus = (id, status) => {
@@ -69,7 +76,7 @@ const changeStatus = (id, status) => {
   store.articleChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    loadArticlesFun();
   }, 1000);
 };
 
@@ -80,8 +87,25 @@ const deleteArticleFun = (id, status) => {
   store.deleteArticle(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadArticles(filteredData);
+    loadArticlesFun();
   }, 1000);
+};
+
+const onDragEnd = (event) => {
+  let newIndex = event.newIndex;
+  let oldIndex = event.oldIndex;
+
+  let item = tableData.value[newIndex];
+
+  let _data = {
+    id: item.id,
+    old_order: oldIndex + 1,
+    new_order: newIndex + 1,
+    page: filteredData.value.page,
+    per_page: filteredData.value.per_page,
+  };
+
+  store.updateDataOrder(_data);
 };
 </script>
 
@@ -139,6 +163,7 @@ const deleteArticleFun = (id, status) => {
             <!-- 👉 table head -->
             <thead>
               <tr>
+                <th scope="col"></th>
                 <th scope="col">#</th>
                 <th scope="col">
                   {{ $t("common.The name of the author of the article") }}
@@ -160,112 +185,152 @@ const deleteArticleFun = (id, status) => {
               </tr>
             </thead>
             <!-- 👉 table body -->
-            <tbody>
-              <tr
-                v-for="(item, index) in store.getArticles"
-                :key="index"
-                style="height: 3.75rem"
-              >
-                <!-- 👉 Order -->
-                <td>
-                  {{ index + 1  }}
-                </td>
-                <td>
-                  <div class="d-flex align-center">
-                    <VAvatar
-                      variant="tonal"
-                      :color="resolveDataStatusVariant('actived').color"
-                      class="me-3"
-                      size="38"
+            <!-- <tbody> -->
+            <VueDraggableNext
+              tag="tbody"
+              :list="store.getArticles"
+              @end="onDragEnd"
+            >
+              <template v-for="(item, index) in store.getArticles" :key="index">
+                <tr style="height: 3.75rem">
+                  <!-- 👉 Order -->
+                  <td style="cursor: pointer">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
                     >
-                      <VImg
-                        v-if="item.image"
-                        :src="getAssetUploadedFilesPath(item.image)"
+                      <path
+                        d="M10 5C10 3.9 9.1 3 8 3C6.9 3 6 3.9 6 5C6 6.1 6.9 7 8 7C9.1 7 10 6.1 10 5Z"
+                        fill="#7D89B0"
                       />
-                      <span v-else>{{ avatarText(item.name) }}</span>
-                    </VAvatar>
-                    {{ item.name }}
-                  </div>
-                </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.title"></div>
-                </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.content.substring(0, 100) + '...'"></div>
-                </td>
-                <td class="pt-2 pb-3">
-                  {{
-                    $filters.moment(item.created_at, "YYYY-MM-DD, h:mm:ss A") ||
-                    "unknown"
-                  }}
-                </td>
-
-                <!-- 👉 Status -->
-                <td>
-                  <VChip
-                    label
-                    :color="
-                      resolveDataStatusVariant(
-                        item.is_active == 1 ? 'actived' : 'stopped'
-                      )
-                    "
-                    size="small"
-                    class="text-capitalize"
-                  >
+                      <path
+                        d="M10 19C10 17.9 9.1 17 8 17C6.9 17 6 17.9 6 19C6 20.1 6.9 21 8 21C9.1 21 10 20.1 10 19Z"
+                        fill="#7D89B0"
+                      />
+                      <path
+                        d="M10 12C10 10.9 9.1 10 8 10C6.9 10 6 10.9 6 12C6 13.1 6.9 14 8 14C9.1 14 10 13.1 10 12Z"
+                        fill="#7D89B0"
+                      />
+                      <path
+                        d="M18 5C18 3.9 17.1 3 16 3C14.9 3 14 3.9 14 5C14 6.1 14.9 7 16 7C17.1 7 18 6.1 18 5Z"
+                        fill="#7D89B0"
+                      />
+                      <path
+                        d="M18 19C18 17.9 17.1 17 16 17C14.9 17 14 17.9 14 19C14 20.1 14.9 21 16 21C17.1 21 18 20.1 18 19Z"
+                        fill="#7D89B0"
+                      />
+                      <path
+                        d="M18 12C18 10.9 17.1 10 16 10C14.9 10 14 10.9 14 12C14 13.1 14.9 14 16 14C17.1 14 18 13.1 18 12Z"
+                        fill="#7D89B0"
+                      />
+                    </svg>
+                  </td>
+                  <td>
+                    {{ index + 1 }}
+                  </td>
+                  <td>
+                    <div class="d-flex align-center">
+                      <VAvatar
+                        variant="tonal"
+                        :color="resolveDataStatusVariant('actived').color"
+                        class="me-3"
+                        size="38"
+                      >
+                        <VImg
+                          v-if="item.image"
+                          :src="getAssetUploadedFilesPath(item.image)"
+                        />
+                        <span v-else>{{ avatarText(item.name) }}</span>
+                      </VAvatar>
+                      {{ item.name }}
+                    </div>
+                  </td>
+                  <td class="pt-2 pb-3">
+                    <div v-html="item.title"></div>
+                  </td>
+                  <td class="pt-2 pb-3">
+                    <div v-html="item.content.substring(0, 50) + '...'"></div>
+                  </td>
+                  <td class="pt-2 pb-3">
                     {{
-                      item.is_active == 1
-                        ? $t("common.actived")
-                        : $t("common.stopped")
+                      $filters.moment(
+                        item.created_at,
+                        "YYYY-MM-DD, h:mm:ss A"
+                      ) || "unknown"
                     }}
-                  </VChip>
-                </td>
+                  </td>
 
-                <!-- 👉 Actions -->
-                <td class="text-center" style="width: 5rem">
-                  <VBtn icon size="x-small" color="default" variant="text">
-                    <VIcon size="22" icon="tabler-dots-vertical" />
+                  <!-- 👉 Status -->
+                  <td>
+                    <VChip
+                      label
+                      :color="
+                        resolveDataStatusVariant(
+                          item.is_active == 1 ? 'actived' : 'stopped'
+                        )
+                      "
+                      size="small"
+                      class="text-capitalize"
+                    >
+                      {{
+                        item.is_active == 1
+                          ? $t("common.actived")
+                          : $t("common.stopped")
+                      }}
+                    </VChip>
+                  </td>
 
-                    <VMenu activator="parent">
-                      <VList>
-                        <VListItem
-                          :title="$t('common.edit')"
-                          :to="{
-                            name: 'blog-articles-edit-id',
-                            params: { id: item.id },
-                          }"
-                        />
-                        <VListItem
-                          v-if="item.is_active == 0"
-                          :title="$t('common.activation')"
-                          @click="
-                            isChangeStatusModalVisible =
-                              !isChangeStatusModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
-                        <VListItem
-                          v-else
-                          :title="$t('common.suspended')"
-                          @click="
-                            isChangeStatusModalVisible =
-                              !isChangeStatusModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
+                  <!-- 👉 Actions -->
+                  <td class="text-center" style="width: 5rem">
+                    <VBtn icon size="x-small" color="default" variant="text">
+                      <VIcon size="22" icon="tabler-dots-vertical" />
 
-                        <VListItem
-                          :title="$t('common.delete')"
-                          @click="
-                            isDeleteModalVisible = !isDeleteModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
-                      </VList>
-                    </VMenu>
-                  </VBtn>
-                </td>
-              </tr>
-            </tbody>
+                      <VMenu activator="parent">
+                        <VList>
+                          <VListItem
+                            :title="$t('common.edit')"
+                            :to="{
+                              name: 'blog-articles-edit-id',
+                              params: { id: item.id },
+                            }"
+                          />
+                          <VListItem
+                            v-if="item.is_active == 0"
+                            :title="$t('common.activation')"
+                            @click="
+                              isChangeStatusModalVisible =
+                                !isChangeStatusModalVisible;
+                              isDataModalVisible = item;
+                            "
+                          />
+                          <VListItem
+                            v-else
+                            :title="$t('common.suspended')"
+                            @click="
+                              isChangeStatusModalVisible =
+                                !isChangeStatusModalVisible;
+                              isDataModalVisible = item;
+                            "
+                          />
+
+                          <VListItem
+                            :title="$t('common.delete')"
+                            @click="
+                              isDeleteModalVisible = !isDeleteModalVisible;
+                              isDataModalVisible = item;
+                            "
+                          />
+                        </VList>
+                      </VMenu>
+                    </VBtn>
+                  </td>
+                </tr>
+              </template>
+            </VueDraggableNext>
+            <!-- </tbody>-->
 
             <!-- 👉 table footer  -->
             <tfoot v-show="!store.getArticles.length">

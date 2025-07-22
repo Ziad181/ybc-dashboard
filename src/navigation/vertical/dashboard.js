@@ -34,6 +34,14 @@ export default [{
   permissions: [permissions.readHomePage],
 },
 {
+  title: 'Units',
+  icon: {
+    icon: 'tabler-building-warehouse'
+  },
+  to: 'units',
+  permissions: [permissions.readHomePage],
+},
+{
   title: 'about_us',
   icon: { icon: 'tabler-clipboard-text' },
   permissions: [permissions.readHomePage],
@@ -94,7 +102,7 @@ export default [{
       to: 'management-board-committees',
     },
     {
-      title: 'Advisory Team',
+      title: 'Advisory Team and Trainers',
       to: 'management-advisory-teams',
     },
   ],

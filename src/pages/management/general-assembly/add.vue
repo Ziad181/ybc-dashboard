@@ -40,7 +40,8 @@ const formData = ref({
   description_en: "",
   images: [],
   company_logo: "",
-  company_scope_of_work: "",
+  company_scope_of_work_ar: "",
+  company_scope_of_work_en: "",
   website_link: "",
   facebook_link: "",
   instagram_link: "",
@@ -93,7 +94,8 @@ const onSubmitForm = () => {
           companyLogo.value && companyLogo.value.length > 0
             ? companyLogo.value[0]
             : null,
-        company_scope_of_work: formData.value.company_scope_of_work,
+        company_scope_of_work_ar: formData.value.company_scope_of_work_ar,
+        company_scope_of_work_en: formData.value.company_scope_of_work_en,
         website_link: formData.value.website_link,
         facebook_link: formData.value.facebook_link,
         instagram_link: formData.value.instagram_link,
@@ -243,12 +245,19 @@ onMounted(() => {});
               </VCol>
               <VCol md="6" cols="12">
                 <VTextField
-                  v-model="formData.company_scope_of_work"
-                  :label="$t('common.company_scope_of_work')"
+                  v-model="formData.company_scope_of_work_ar"
+                  :label="$t('common.company_scope_of_work_ar')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
               <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.company_scope_of_work_en"
+                  :label="$t('common.company_scope_of_work_en')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="4" cols="12">
                 <VTextField
                   v-model="formData.website_link"
                   :label="$t('common.website_link')"

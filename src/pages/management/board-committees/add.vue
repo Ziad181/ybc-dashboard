@@ -291,7 +291,7 @@ onMounted(() => {
             <VRow>
               <VCol cols="12">
                 <VBtn type="button" @click="addNewEmployee">{{
-                  $t("common.add_employee")
+                  $t("common.add_member")
                 }}</VBtn>
               </VCol>
               <!-- 👉 Form Actions -->

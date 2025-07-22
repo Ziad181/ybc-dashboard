@@ -2,37 +2,37 @@ import { useAppsStore } from "@/stores/app";
 import { defineStore } from "pinia";
 
 const store = useAppsStore();
-export const useArticlesStore = defineStore({
-  id: "articles",
+export const useUnitsStore = defineStore({
+  id: "units",
   state: () => ({
-    articles: [],
-    totalArticles: {
+    units: [],
+    totalUnits: {
       currentPage: null,
       totalItems: null,
       totalPages: null,
     },
-    articleDetails: null,
+    unitDetails: null,
   }),
   getters: {
-    getArticles: state => state.articles,
-    getTotalArticles: state => state.totalArticles,
-    getArticleDetails: state => state.articleDetails,
+    getUnits: state => state.units,
+    getTotalUnits: state => state.totalUnits,
+    getUnitDetails: state => state.unitDetails,
   },
   actions: {
-    async loadArticles(data) {
+    async loadUnits(data) {
       store.loadingStart();
       await this.$http
         .get(
-          `/admin/articles?page=${data.value.page}&per_page=${data.value.per_page}&status=${data.value.status != null ? data.value.status : ""
+          `/admin/units?page=${data.value.page}&per_page=${data.value.per_page}&status=${data.value.status != null ? data.value.status : ""
           }&search=${data.value.search}`
         )
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {
-            this.articles = response.data.data.data;
-            this.totalArticles.currentPage = response.data.data.current_page;
-            this.totalArticles.totalItems = response.data.data.total;
-            this.totalArticles.totalPages = response.data.data.last_page;
+            this.units = response.data.data.data;
+            this.totalUnits.currentPage = response.data.data.current_page;
+            this.totalUnits.totalItems = response.data.data.total;
+            this.totalUnits.totalPages = response.data.data.last_page;
           }
         })
         .catch(error => {
@@ -40,14 +40,14 @@ export const useArticlesStore = defineStore({
           throw error;
         });
     },
-    async loadArticleDetails(id) {
+    async loadUnitDetails(id) {
       store.loadingStart();
       await this.$http
-        .get(`/admin/articles/detail/${id}`)
+        .get(`/admin/units/detail/${id}`)
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {
-            this.articleDetails = response.data.data;
+            this.unitDetails = response.data.data;
           }
         })
         .catch(error => {
@@ -55,11 +55,11 @@ export const useArticlesStore = defineStore({
           throw error;
         });
     },
-    async storeArticle(data) {
+    async storeUnit(data) {
       store.loadingStart();
 
       return await this.$http
-        .post(`/admin/articles/create`, data, {
+        .post(`/admin/units/create`, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -79,11 +79,11 @@ export const useArticlesStore = defineStore({
           throw error;
         });
     },
-    async updateArticle(data) {
+    async updateUnit(data) {
       store.loadingStart();
 
       return await this.$http
-        .post(`/admin/articles/update/${data.id}`, data, {
+        .post(`/admin/units/update/${data.id}`, data, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -103,10 +103,10 @@ export const useArticlesStore = defineStore({
           throw error;
         });
     },
-    async articleChangeStatus(data) {
+    async unitChangeStatus(data) {
       store.loadingStart();
       await this.$http
-        .post(`/admin/articles/toggle/${data.id}`, data)
+        .post(`/admin/units/toggle/${data.id}`, data)
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {
@@ -121,36 +121,16 @@ export const useArticlesStore = defineStore({
           throw error;
         });
     },
-    async deleteArticle(data) {
+    async deleteUnit(data) {
       store.loadingStart();
       await this.$http
-        .delete(`/admin/articles/delete/${data.id}`)
+        .delete(`/admin/units/delete/${data.id}`)
         .then(response => {
           store.loadingFinish();
           if (response.status === 200) {
             this.$notificationMessage({
               title: this.$t("success_messages.delete_successfully"),
               type: "success",
-            });
-          }
-        })
-        .catch(error => {
-          store.loadingFinish();
-          throw error;
-        });
-    },
-
-
-    async updateDataOrder(data) {
-      store.loadingStart();
-      await this.$http
-        .put(`/admin/articles/update-order`, data)
-        .then(response => {
-          store.loadingFinish();
-          if (response.status === 200) {
-            this.$notificationMessage({
-              title: this.$t("success_messages.saved_successfully"),
-              type: "success"
             });
           }
         })

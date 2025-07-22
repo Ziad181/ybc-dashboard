@@ -117,7 +117,7 @@ const deleteEmployeeFun = (id, status) => {
                   {{ $t("common.filter") }}
                 </VBtn>
                 <VBtn class="px-7" :to="{ name: 'management-board-of-directors-add' }">
-                  {{ $t("common.add_employee") }}
+                  {{ $t("common.add_member") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->

@@ -1,5 +1,5 @@
 <script setup>
-import { useManagementStore } from "@/stores/management";
+import { useUnitsStore } from "@/stores/units";
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -23,27 +23,20 @@ import { getAssetUploadedFilesPath } from "@/helpers/assets";
 const { t } = useI18n(); //
 const router = useRouter();
 const route = useRoute();
-const store = useManagementStore();
+const store = useUnitsStore();
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
 
 const formData = ref({
   id: route.params.id,
-  type: "board_of_directors",
-  name_en: "",
-  name_ar: "",
-  job_ar: "",
-  job_en: "",
-  company_ar: "",
-  company_en: "",
-  description_ar: "",
-  description_en: "",
+  title_en: "",
+  title_ar: "",
+  content_en: "",
+  content_ar: "",
   images: [],
-  facebook_link: "",
-  instagram_link: "",
-  linkedin_link: "",
 });
+
 const loadImages = (e) => {
   const files = e.target.files;
   if (files.length > 0) {
@@ -63,23 +56,15 @@ const onSubmitForm = () => {
     if (isValid) {
       var data = {
         id: formData.value.id,
-        type: formData.value.type,
-        name_en: formData.value.name_en,
-        name_ar: formData.value.name_ar,
-        job_ar: formData.value.job_ar,
-        job_en: formData.value.job_en,
-        company_ar: formData.value.company_ar,
-        company_en: formData.value.company_en,
-        description_ar: formData.value.description_ar,
-        description_en: formData.value.description_en,
+        title_en: formData.value.title_en,
+        title_ar: formData.value.title_ar,
+        content_en: formData.value.content_en,
+        content_ar: formData.value.content_ar,
         image: images.value && images.value.length > 0 ? images.value[0] : null,
-        facebook_link: formData.value.facebook_link,
-        instagram_link: formData.value.instagram_link,
-        linkedin_link: formData.value.linkedin_link,
       };
-      store.updateEmployee(data).then((res) => {
+      store.updateUnit(data).then((res) => {
         router.push({
-          name: "management-board-of-directors",
+          name: "units",
         });
       });
     }
@@ -87,22 +72,14 @@ const onSubmitForm = () => {
 };
 
 onMounted(() => {
-  store.loadEmployeeDetails(route.params.id).then(() => {
-    formData.value.type = store.getEmployeeDetails.type;
-    formData.value.name_ar = store.getEmployeeDetails.name_ar;
-    formData.value.name_en = store.getEmployeeDetails.name_en;
-    formData.value.job_ar = store.getEmployeeDetails.job_ar;
-    formData.value.job_en = store.getEmployeeDetails.job_en;
-    formData.value.company_ar = store.getEmployeeDetails.company_ar;
-    formData.value.company_en = store.getEmployeeDetails.company_en;
-    formData.value.description_ar = store.getEmployeeDetails.description_ar;
-    formData.value.description_en = store.getEmployeeDetails.description_en;
-    images.value = store.getEmployeeDetails.image
-      ? [store.getEmployeeDetails.image]
+  store.loadUnitDetails(route.params.id).then(() => {
+    formData.value.title_ar = store.getUnitDetails.title_ar;
+    formData.value.title_en = store.getUnitDetails.title_en;
+    formData.value.content_ar = store.getUnitDetails.content_ar;
+    formData.value.content_en = store.getUnitDetails.content_en;
+    images.value = store.getUnitDetails.image
+      ? [store.getUnitDetails.image]
       : [];
-    formData.value.facebook_link = store.getEmployeeDetails.facebook_link;
-    formData.value.instagram_link = store.getEmployeeDetails.instagram_link;
-    formData.value.linkedin_link = store.getEmployeeDetails.linkedin_link;
   });
 });
 </script>
@@ -126,7 +103,7 @@ onMounted(() => {
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.edit_member_data") }}
+              {{ $t("common.edit_unit") }}
             </h4>
           </div>
           <VDivider />
@@ -162,56 +139,46 @@ onMounted(() => {
                   class="hide-input"
                 />
               </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.title_ar"
+                  :label="$t('common.title_ar')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
+              <VCol md="6" cols="12">
+                <VTextField
+                  v-model="formData.title_en"
+                  :label="$t('common.title_en')"
+                  :rules="[requiredValidator]"
+                />
+              </VCol>
 
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.name_ar"
-                  :label="$t('common.name_ar')"
-                  :rules="[requiredValidator]"
-                />
+              <VCol cols="12">
+                <label>{{ $t("common.content_ar") }}</label>
+                <div class="texteditor" dir="ltr">
+                  <QuillEditor
+                    v-model:content="formData.content_ar"
+                    theme="snow"
+                    toolbar="full"
+                    contentType="html"
+                    name="content_ar"
+                    :placeholder="$t('common.content_ar')"
+                  />
+                </div>
               </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.name_en"
-                  :label="$t('common.name_en')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.job_ar"
-                  :label="$t('common.job_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.job_en"
-                  :label="$t('common.job_en')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="4" cols="12">
-                <VTextField
-                  v-model="formData.facebook_link"
-                  :label="$t('common.facebook_link')"
-                  :rules="[urlValidator]"
-                />
-              </VCol>
-              <VCol md="4" cols="12">
-                <VTextField
-                  v-model="formData.instagram_link"
-                  :label="$t('common.instagram_link')"
-                  :rules="[urlValidator]"
-                />
-              </VCol>
-              <VCol md="4" cols="12">
-                <VTextField
-                  v-model="formData.linkedin_link"
-                  :label="$t('common.linkedin_link')"
-                  :rules="[urlValidator]"
-                />
+              <VCol cols="12">
+                <label>{{ $t("common.content_en") }}</label>
+                <div class="texteditor" dir="ltr">
+                  <QuillEditor
+                    v-model:content="formData.content_en"
+                    theme="snow"
+                    toolbar="full"
+                    contentType="html"
+                    name="content_en"
+                    :placeholder="$t('common.content_en')"
+                  />
+                </div>
               </VCol>
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
@@ -225,7 +192,7 @@ onMounted(() => {
                   color="secondary"
                   variant="tonal"
                   type="reset"
-                  :to="{ name: 'management-board-of-directors' }"
+                  :to="{ name: 'units' }"
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>

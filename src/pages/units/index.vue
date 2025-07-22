@@ -1,23 +1,29 @@
 <script setup>
-import { useManagementStore } from "@/stores/management";
+import { useUnitsStore } from "@/stores/units";
 import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
+import { VueDraggableNext } from "vue-draggable-next";
 
 const { t } = useI18n(); //
-const store = useManagementStore();
+const store = useUnitsStore();
 
+const tableData = ref([]);
 const filteredData = ref({
-  type: "executive_management",
   search: "",
   status: null,
   page: 1,
   per_page: 10,
 });
+const loadUnitsFun = () => {
+  store.loadUnits(filteredData).then((response) => {
+    tableData.value = store.getUnits;
+  });
+};
 
 onMounted(() => {
-  store.loadEmployees(filteredData);
+  loadUnitsFun();
 });
 
 const status = [
@@ -48,18 +54,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadEmployees(filteredData);
+    loadUnitsFun();
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadEmployees(filteredData);
+  loadUnitsFun();
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadEmployees(filteredData);
+  loadUnitsFun();
 };
 
 const changeStatus = (id, status) => {
@@ -67,21 +73,21 @@ const changeStatus = (id, status) => {
     id: id,
     status: status == 0 ? 1 : 0,
   };
-  store.employeeChangeStatus(data);
+  store.unitChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadEmployees(filteredData);
+    loadUnitsFun();
   }, 1000);
 };
 
-const deleteEmployeeFun = (id, status) => {
+const deleteUnitFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteEmployee(data);
+  store.deleteUnit(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadEmployees(filteredData);
+    loadUnitsFun();
   }, 1000);
 };
 </script>
@@ -90,7 +96,7 @@ const deleteEmployeeFun = (id, status) => {
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard :title="$t('nav.Board of Directors')">
+        <VCard :title="$t('nav.Units')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
@@ -116,8 +122,8 @@ const deleteEmployeeFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'management-executive-management-add' }">
-                  {{ $t("common.add_member") }}
+                <VBtn class="px-7" :to="{ name: 'units-add' }">
+                  {{ $t("common.add_unit") }}
                 </VBtn>
               </VCol>
               <!-- 👉 Select Status -->
@@ -142,11 +148,12 @@ const deleteEmployeeFun = (id, status) => {
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">
-                  {{ $t("common.name") }}
+                  {{ $t("common.title") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.job") }}
+                  {{ $t("common.content") }}
                 </th>
+
                 <th scope="col">
                   {{ $t("common.created_at") }}
                 </th>
@@ -158,111 +165,113 @@ const deleteEmployeeFun = (id, status) => {
             </thead>
             <!-- 👉 table body -->
             <tbody>
-              <tr
-                v-for="(item, index) in store.getEmployees"
-                :key="index"
-                style="height: 3.75rem"
-              >
-                <!-- 👉 Order -->
-                <td>
-                  {{ index + 1  }}
-                </td>
-                <td>
-                  <div class="d-flex align-center">
-                    <VAvatar
-                      variant="tonal"
-                      :color="resolveDataStatusVariant('actived').color"
-                      class="me-3"
-                      size="38"
-                    >
-                      <VImg
-                        v-if="item.image"
-                        :src="getAssetUploadedFilesPath(item.image)"
-                      />
-                      <span v-else>{{ avatarText(item.name) }}</span>
-                    </VAvatar>
-                    {{ item.name }}
-                  </div>
-                </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.job"></div>
-                </td>
-                <td class="pt-2 pb-3">
-                  {{
-                    $filters.moment(item.created_at, "YYYY-MM-DD, h:mm:ss A") ||
-                    "unknown"
-                  }}
-                </td>
-
-                <!-- 👉 Status -->
-                <td>
-                  <VChip
-                    label
-                    :color="
-                      resolveDataStatusVariant(
-                        item.is_active == 1 ? 'actived' : 'stopped'
-                      )
-                    "
-                    size="small"
-                    class="text-capitalize"
-                  >
+              <template v-for="(item, index) in store.getUnits" :key="index">
+                <tr style="height: 3.75rem">  
+                  <td>
+                    {{ index + 1 }}
+                  </td>
+                  <td>
+                    <div class="d-flex align-center">
+                      <VAvatar
+                        variant="tonal"
+                        :color="resolveDataStatusVariant('actived').color"
+                        class="me-3"
+                        size="38"
+                      >
+                        <VImg
+                          v-if="item.image"
+                          :src="getAssetUploadedFilesPath(item.image)"
+                        />
+                        <span v-else>{{ avatarText(item.name) }}</span>
+                      </VAvatar>
+                      {{ item.name }}
+                    </div>
+                  </td>
+                  <td class="pt-2 pb-3">
+                    <div v-html="item.title"></div>
+                  </td>
+                  <td class="pt-2 pb-3">
+                    <div v-html="item.content.substring(0, 50) + '...'"></div>
+                  </td>
+                  <td class="pt-2 pb-3">
                     {{
-                      item.is_active == 1
-                        ? $t("common.actived")
-                        : $t("common.stopped")
+                      $filters.moment(
+                        item.created_at,
+                        "YYYY-MM-DD, h:mm:ss A"
+                      ) || "unknown"
                     }}
-                  </VChip>
-                </td>
+                  </td>
 
-                <!-- 👉 Actions -->
-                <td class="text-center" style="width: 5rem">
-                  <VBtn icon size="x-small" color="default" variant="text">
-                    <VIcon size="22" icon="tabler-dots-vertical" />
+                  <!-- 👉 Status -->
+                  <td>
+                    <VChip
+                      label
+                      :color="
+                        resolveDataStatusVariant(
+                          item.is_active == 1 ? 'actived' : 'stopped'
+                        )
+                      "
+                      size="small"
+                      class="text-capitalize"
+                    >
+                      {{
+                        item.is_active == 1
+                          ? $t("common.actived")
+                          : $t("common.stopped")
+                      }}
+                    </VChip>
+                  </td>
 
-                    <VMenu activator="parent">
-                      <VList>
-                        <VListItem
-                          :title="$t('common.edit')"
-                          :to="{
-                            name: 'management-executive-management-edit-id',
-                            params: { id: item.id },
-                          }"
-                        />
-                        <VListItem
-                          v-if="item.is_active == 0"
-                          :title="$t('common.activation')"
-                          @click="
-                            isChangeStatusModalVisible =
-                              !isChangeStatusModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
-                        <VListItem
-                          v-else
-                          :title="$t('common.suspended')"
-                          @click="
-                            isChangeStatusModalVisible =
-                              !isChangeStatusModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
+                  <!-- 👉 Actions -->
+                  <td class="text-center" style="width: 5rem">
+                    <VBtn icon size="x-small" color="default" variant="text">
+                      <VIcon size="22" icon="tabler-dots-vertical" />
 
-                        <VListItem
-                          :title="$t('common.delete')"
-                          @click="
-                            isDeleteModalVisible = !isDeleteModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
-                      </VList>
-                    </VMenu>
-                  </VBtn>
-                </td>
-              </tr>
+                      <VMenu activator="parent">
+                        <VList>
+                          <VListItem
+                            :title="$t('common.edit')"
+                            :to="{
+                              name: 'units-edit-id',
+                              params: { id: item.id },
+                            }"
+                          />
+                          <VListItem
+                            v-if="item.is_active == 0"
+                            :title="$t('common.activation')"
+                            @click="
+                              isChangeStatusModalVisible =
+                                !isChangeStatusModalVisible;
+                              isDataModalVisible = item;
+                            "
+                          />
+                          <VListItem
+                            v-else
+                            :title="$t('common.suspended')"
+                            @click="
+                              isChangeStatusModalVisible =
+                                !isChangeStatusModalVisible;
+                              isDataModalVisible = item;
+                            "
+                          />
+
+                          <VListItem
+                            :title="$t('common.delete')"
+                            @click="
+                              isDeleteModalVisible = !isDeleteModalVisible;
+                              isDataModalVisible = item;
+                            "
+                          />
+                        </VList>
+                      </VMenu>
+                    </VBtn>
+                  </td>
+                </tr>
+              </template>
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getEmployees.length">
+            <tfoot v-show="!store.getUnits.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -349,7 +358,7 @@ const deleteEmployeeFun = (id, status) => {
                 <VBtn
                   color="error"
                   @click="
-                    deleteEmployeeFun(
+                    deleteUnitFun(
                       isDataModalVisible.id,
                       isDataModalVisible.is_active
                     )
@@ -363,7 +372,7 @@ const deleteEmployeeFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalEmployees.currentPage"
+            v-if="store.getTotalUnits.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -377,10 +386,10 @@ const deleteEmployeeFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalEmployees.currentPage"
+              v-model="store.getTotalUnits.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalEmployees.totalPages"
+              :length="store.getTotalUnits.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

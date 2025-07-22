@@ -105,7 +105,7 @@ onMounted(() => {});
             >
             </VBtn>
             <h4 class="text-h6 font-weight-bold">
-              {{ $t("common.add_employee") }}
+              {{ $t("common.add_member") }}
             </h4>
           </div>
           <VDivider />

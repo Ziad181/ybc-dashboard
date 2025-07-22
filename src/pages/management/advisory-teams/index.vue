@@ -90,7 +90,7 @@ const deleteEmployeeFun = (id, status) => {
   <section>
     <VRow>
       <VCol cols="12">
-        <VCard :title="$t('nav.Advisory Team')">
+        <VCard :title="$t('nav.Advisory Team and Trainers')">
           <!-- 👉 Filters -->
           <VCardText>
             <VRow>
