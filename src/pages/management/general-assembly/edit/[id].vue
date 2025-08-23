@@ -1,5 +1,7 @@
 <script setup>
 import { useManagementStore } from "@/stores/management";
+import { useMemberStore } from "@/stores/member";
+
 import { onMounted, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -24,6 +26,7 @@ const { t } = useI18n(); //
 const router = useRouter();
 const route = useRoute();
 const store = useManagementStore();
+const memberStore = useMemberStore();
 const refInputEl = ref();
 const refVForm = ref();
 const images = ref([]);
@@ -112,30 +115,32 @@ const onSubmitForm = () => {
 };
 
 onMounted(() => {
-  store.loadEmployeeDetails(route.params.id).then(() => {
-    formData.value.type = store.getEmployeeDetails.type;
-    formData.value.name_ar = store.getEmployeeDetails.name_ar;
-    formData.value.name_en = store.getEmployeeDetails.name_en;
-    formData.value.job_ar = store.getEmployeeDetails.job_ar;
-    formData.value.job_en = store.getEmployeeDetails.job_en;
-    formData.value.company_ar = store.getEmployeeDetails.company_ar;
-    formData.value.company_en = store.getEmployeeDetails.company_en;
-    formData.value.description_ar = store.getEmployeeDetails.description_ar;
-    formData.value.description_en = store.getEmployeeDetails.description_en;
-    images.value = store.getEmployeeDetails.image
-      ? [store.getEmployeeDetails.image]
+  memberStore.loadMemberDetails(route.params.id).then(() => {
+    formData.value.name_ar = memberStore.getMemberDetails.name;
+    formData.value.job_ar = memberStore.getMemberDetails.club_member.position;
+    formData.value.company_ar =
+      memberStore.getMemberDetails.club_member.entity_name_ar;
+    formData.value.company_en =
+      memberStore.getMemberDetails.club_member.entity_name_en;
+    formData.value.description_ar =
+      memberStore.getMemberDetails.club_member.entity_description;
+    images.value = memberStore.getMemberDetails.image
+      ? [memberStore.getMemberDetails.image]
       : [];
-    companyLogo.value = store.getEmployeeDetails.company_logo
-      ? [store.getEmployeeDetails.company_logo]
+    companyLogo.value = memberStore.getMemberDetails.club_member.entity_logo
+      ? [memberStore.getMemberDetails.club_member.entity_logo]
       : [];
     formData.value.company_scope_of_work_ar =
-      store.getEmployeeDetails.company_scope_of_work_ar;
-    formData.value.company_scope_of_work_en =
-      store.getEmployeeDetails.company_scope_of_work_en;
-    formData.value.website_link = store.getEmployeeDetails.website_link;
-    formData.value.facebook_link = store.getEmployeeDetails.facebook_link;
-    formData.value.instagram_link = store.getEmployeeDetails.instagram_link;
-    formData.value.linkedin_link = store.getEmployeeDetails.linkedin_link;
+      memberStore.getMemberDetails.club_member.entity_business_field;
+
+    formData.value.website_link =
+      memberStore.getMemberDetails.club_member.website_link;
+    formData.value.facebook_link =
+      memberStore.getMemberDetails.club_member.facebook_link;
+    formData.value.instagram_link =
+      memberStore.getMemberDetails.club_member.instagram_link;
+    formData.value.linkedin_link =
+      memberStore.getMemberDetails.club_member.linkedin_link;
   });
 });
 </script>
@@ -199,14 +204,7 @@ onMounted(() => {
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.name_ar"
-                  :label="$t('common.name_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.name_en"
-                  :label="$t('common.name_en')"
+                  :label="$t('common.name')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -214,14 +212,7 @@ onMounted(() => {
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.job_ar"
-                  :label="$t('common.job_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.job_en"
-                  :label="$t('common.job_en')"
+                  :label="$t('common.job')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -273,14 +264,7 @@ onMounted(() => {
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.company_scope_of_work_ar"
-                  :label="$t('common.company_scope_of_work_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.company_scope_of_work_en"
-                  :label="$t('common.company_scope_of_work_en')"
+                  :label="$t('common.company_scope_of_work')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -313,7 +297,7 @@ onMounted(() => {
                 />
               </VCol>
               <VCol cols="12">
-                <label>{{ $t("common.description_ar") }}</label>
+                <label>{{ $t("common.description") }}</label>
                 <div class="texteditor" dir="ltr">
                   <QuillEditor
                     v-model:content="formData.description_ar"
@@ -322,19 +306,6 @@ onMounted(() => {
                     contentType="html"
                     name="description_ar"
                     :placeholder="$t('common.description_ar')"
-                  />
-                </div>
-              </VCol>
-              <VCol cols="12">
-                <label>{{ $t("common.description_en") }}</label>
-                <div class="texteditor" dir="ltr">
-                  <QuillEditor
-                    v-model:content="formData.description_en"
-                    theme="snow"
-                    toolbar="full"
-                    contentType="html"
-                    name="description_en"
-                    :placeholder="$t('common.description_en')"
                   />
                 </div>
               </VCol>

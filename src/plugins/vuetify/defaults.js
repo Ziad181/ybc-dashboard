@@ -111,6 +111,12 @@ export default {
     color: 'primary',
     hideDetails: 'auto',
   },
+    VFileUpload: {
+    variant: 'outlined',
+    density: 'compact',
+    color: 'primary',
+    hideDetails: 'auto',
+  },
   VTextarea: {
     variant: 'outlined',
     density: 'compact',

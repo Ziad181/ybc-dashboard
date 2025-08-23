@@ -150,11 +150,12 @@ const changeStatus = (id, status) => {
                   {{ $t("common.user") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.email") }}
+                  {{ $t("common.job") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.phone_number") }}
+                  {{ $t("common.company") }}
                 </th>
+
                 <th scope="col">
                   {{ $t("common.status") }}
                 </th>
@@ -190,10 +191,10 @@ const changeStatus = (id, status) => {
                     </div>
                   </div>
                 </td>
-                <td>{{ item.email }}</td>
+                <td>{{ item.position }}</td>
                 <td>
                   <p dir="ltr" class="mb-0 text-end">
-                    {{ item.phone ?? "-----" }}
+                    {{ item.entity_name ?? "-----" }}
                   </p>
                 </td>
                 <!-- 👉 Status -->
@@ -300,9 +301,9 @@ const changeStatus = (id, status) => {
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>
-                <VBtn @click="changeStatus(isDataModalVisible.id, newStatus)"
-        
-                :color="newStatus == 'rejected' ? 'error' : 'success'"
+                <VBtn
+                  @click="changeStatus(isDataModalVisible.id, newStatus)"
+                  :color="newStatus == 'rejected' ? 'error' : 'success'"
                 >
                   {{
                     newStatus == "rejected"

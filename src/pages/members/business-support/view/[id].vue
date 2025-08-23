@@ -18,6 +18,10 @@ const resolveDataStatusVariant = (stat) => {
   if (stat === "canceled") return "error";
   return "primary";
 };
+const openBlock = (file) => {
+  const fileUrl = getAssetUploadedFilesPath(file);
+  window.open(fileUrl, "_blank");
+};
 
 onMounted(() => {
   store.loadMemberDetails(route.params.id);
@@ -337,24 +341,40 @@ onMounted(() => {
                       )
                     }}
                   </span>
-                  <VImg
+
+                  <v-card
                     v-if="
                       store.getMemberDetails.business_support_center_member
                         ?.id_image
                     "
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.business_support_center_member
-                          ?.id_image
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.business_support_center_member
+                            ?.id_image
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.business_support_center_member
+                            ?.id_image
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -367,23 +387,38 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Attach CV") }}
                   </span>
-                  <VImg
+                  <v-card
                     v-if="
                       store.getMemberDetails.business_support_center_member?.cv
                     "
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.business_support_center_member
-                          ?.cv
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.business_support_center_member
+                            ?.cv
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.business_support_center_member
+                            ?.cv
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -397,24 +432,40 @@ onMounted(() => {
                     {{ $t("common.license") }}
                   </span>
 
-                  <VImg
+                  <v-card
                     v-if="
                       store.getMemberDetails.business_support_center_member
                         ?.license
                     "
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.business_support_center_member
-                          ?.license
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.business_support_center_member
+                            ?.license
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.business_support_center_member
+                            ?.license
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -428,24 +479,40 @@ onMounted(() => {
                     {{ $t("common.Attach the project logo") }}
                   </span>
 
-                  <VImg
+                  <v-card
                     v-if="
                       store.getMemberDetails.business_support_center_member
                         ?.project_logo
                     "
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.business_support_center_member
-                          ?.project_logo
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.business_support_center_member
+                            ?.project_logo
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.business_support_center_member
+                            ?.project_logo
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>

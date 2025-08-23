@@ -1,38 +1,41 @@
 <script setup>
-import { useManagementStore } from "@/stores/management";
+import { useMemberStore } from "@/stores/member";
 import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
 
 const { t } = useI18n(); //
-const store = useManagementStore();
+const store = useMemberStore();
 
 const filteredData = ref({
-  type: "general_assembly",
   search: "",
+  type: 2,
   status: null,
   page: 1,
-  per_page: 10,
+  perPage: 10,
 });
 
 onMounted(() => {
-  store.loadEmployees(filteredData);
+  store.loadMembers(filteredData);
 });
 
 const status = [
   {
-    title: t("common.actived"),
-    id: 1,
+    title: t("common.approved"),
+    id: "approved",
   },
   {
-    title: t("common.stopped"),
-    id: 0,
+    title: t("common.rejected"),
+    id: "rejected",
+  },
+  {
+    title: t("common.pending"),
+    id: "pending",
   },
 ];
 
 const isFilterOrdersVisible = ref(false);
-const isChangeStatusModalVisible = ref(false);
 const isDeleteModalVisible = ref(false);
 const isDataModalVisible = ref("");
 
@@ -43,45 +46,35 @@ const resolveDataStatusVariant = (stat) => {
   if (stat === "stopped") return "warning";
   if (stat === "processed") return "primary";
   if (stat === "canceled") return "error";
+
   return "primary";
 };
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadEmployees(filteredData);
+    store.loadMembers(filteredData);
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadEmployees(filteredData);
+  store.loadMembers(filteredData);
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadEmployees(filteredData);
+  store.loadMembers(filteredData);
 };
 
-const changeStatus = (id, status) => {
-  let data = {
-    id: id,
-    status: status == 0 ? 1 : 0,
-  };
-  store.employeeChangeStatus(data);
-  isChangeStatusModalVisible.value = false;
-  setTimeout(() => {
-    store.loadEmployees(filteredData);
-  }, 1000);
-};
 
 const deleteEmployeeFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteEmployee(data);
+  store.deleteMembers(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadEmployees(filteredData);
+    store.loadMembers(filteredData);
   }, 1000);
 };
 </script>
@@ -116,7 +109,10 @@ const deleteEmployeeFun = (id, status) => {
                 >
                   {{ $t("common.filter") }}
                 </VBtn>
-                <VBtn class="px-7" :to="{ name: 'management-general-assembly-add' }">
+                <VBtn
+                  class="px-7"
+                  :to="{ name: 'management-general-assembly-add' }"
+                >
                   {{ $t("common.Add a member") }}
                 </VBtn>
               </VCol>
@@ -163,13 +159,12 @@ const deleteEmployeeFun = (id, status) => {
             <!-- 👉 table body -->
             <tbody>
               <tr
-                v-for="(item, index) in store.getEmployees"
+                v-for="(item, index) in store.getMembers"
                 :key="index"
                 style="height: 3.75rem"
               >
-                <!-- 👉 Order -->
                 <td>
-                  {{ index + 1  }}
+                  {{ index + 1 }}
                 </td>
                 <td>
                   <div class="d-flex align-center">
@@ -185,39 +180,34 @@ const deleteEmployeeFun = (id, status) => {
                       />
                       <span v-else>{{ avatarText(item.name) }}</span>
                     </VAvatar>
-                    {{ item.name }}
+                    <div class="d-flex flex-column">
+                      {{ item.name }}
+                    </div>
                   </div>
                 </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.job"></div>
+                <td>{{ item.position }}</td>
+                <td>
+                  <p dir="ltr" class="mb-0 text-end">
+                    {{ item.entity_name ?? "-----" }}
+                  </p>
                 </td>
-                <td class="pt-2 pb-3">
-                  <div v-html="item.company"></div>
-                </td>
-                <td class="pt-2 pb-3">
-                  {{
-                    $filters.moment(item.created_at, "YYYY-MM-DD, h:mm:ss A") ||
-                    "unknown"
-                  }}
-                </td>
-
                 <!-- 👉 Status -->
                 <td>
                   <VChip
                     label
                     :color="
                       resolveDataStatusVariant(
-                        item.is_active == 1 ? 'actived' : 'stopped'
+                        item.status == 'approved'
+                          ? 'actived'
+                          : item.status == 'rejected'
+                          ? 'canceled'
+                          : 'stopped'
                       )
                     "
                     size="small"
                     class="text-capitalize"
                   >
-                    {{
-                      item.is_active == 1
-                        ? $t("common.actived")
-                        : $t("common.stopped")
-                    }}
+                    {{ $t(`common.${item.status}`) }}
                   </VChip>
                 </td>
 
@@ -229,31 +219,20 @@ const deleteEmployeeFun = (id, status) => {
                     <VMenu activator="parent">
                       <VList>
                         <VListItem
+                          :title="$t('common.view_details')"
+                          :to="{
+                            name: 'members-club-members-view-id',
+                            params: { id: item.id },
+                          }"
+                        />
+                        <VListItem
                           :title="$t('common.edit')"
                           :to="{
                             name: 'management-general-assembly-edit-id',
                             params: { id: item.id },
                           }"
                         />
-                        <VListItem
-                          v-if="item.is_active == 0"
-                          :title="$t('common.activation')"
-                          @click="
-                            isChangeStatusModalVisible =
-                              !isChangeStatusModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
-                        <VListItem
-                          v-else
-                          :title="$t('common.suspended')"
-                          @click="
-                            isChangeStatusModalVisible =
-                              !isChangeStatusModalVisible;
-                            isDataModalVisible = item;
-                          "
-                        />
-
+                      
                         <VListItem
                           :title="$t('common.delete')"
                           @click="
@@ -269,7 +248,7 @@ const deleteEmployeeFun = (id, status) => {
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getEmployees.length">
+            <tfoot v-show="!store.getMembers.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -277,57 +256,7 @@ const deleteEmployeeFun = (id, status) => {
               </tr>
             </tfoot>
           </VTable>
-          <!-- Dialog -->
-          <VDialog v-model="isChangeStatusModalVisible" class="v-dialog-sm">
-            <!-- Dialog close btn -->
-            <VBtn
-              icon
-              class="v-dialog-close-btn"
-              @click="isChangeStatusModalVisible = !isChangeStatusModalVisible"
-            >
-              <VIcon icon="tabler-x" />
-            </VBtn>
 
-            <VCard
-              :title="
-                isDataModalVisible.is_active == 0
-                  ? $t('common.Activation confirmation')
-                  : $t('common.Suspend confirmation')
-              "
-            >
-              <VCardText>
-                {{
-                  isDataModalVisible.is_active == 0
-                    ? $t("common.Are you sure about the activation process?")
-                    : $t("common.Are you sure about the suspension process?")
-                }}
-              </VCardText>
-
-              <VCardText class="d-flex justify-end flex-wrap gap-3">
-                <VBtn
-                  variant="tonal"
-                  color="secondary"
-                  @click="isChangeStatusModalVisible = false"
-                >
-                  {{ $t("common.cancel") }}
-                </VBtn>
-                <VBtn
-                  @click="
-                    changeStatus(
-                      isDataModalVisible.id,
-                      isDataModalVisible.is_active
-                    )
-                  "
-                >
-                  {{
-                    isDataModalVisible.is_active == 0
-                      ? $t("common.activation")
-                      : $t("common.suspended")
-                  }}
-                </VBtn>
-              </VCardText>
-            </VCard>
-          </VDialog>
 
           <!-- Dialog -->
           <VDialog v-model="isDeleteModalVisible" class="v-dialog-sm">
@@ -370,7 +299,7 @@ const deleteEmployeeFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalEmployees.currentPage"
+            v-if="store.getTotalMembers.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -384,10 +313,10 @@ const deleteEmployeeFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalEmployees.currentPage"
+              v-model="store.getTotalMembers.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalEmployees.totalPages"
+              :length="store.getTotalMembers.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

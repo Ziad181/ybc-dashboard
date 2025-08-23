@@ -5,6 +5,11 @@ export default {
     return {
       cards: [
         {
+          title: "The basic system",
+          icon: "tabler-settings",
+          route: "settings-basic-system",
+        },
+        {
           title: "Statistics",
           icon: "tabler-chart-dots",
           route: "settings-statistics",

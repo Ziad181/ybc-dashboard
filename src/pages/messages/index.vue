@@ -121,9 +121,6 @@ const onper_pageChange = (data) => {
                   {{ $t("common.sender_phone") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.service_type") }}
-                </th>
-                <th scope="col">
                   {{ $t("common.status") }}
                 </th>
                 <th scope="col">
@@ -149,10 +146,6 @@ const onper_pageChange = (data) => {
                 <td>
                   {{ item.phone }}
                 </td>
-                <td>
-                  {{ $t(`common.${item.service_type}`) }}
-                </td>
-
                 <td>
                   <VChip
                     label

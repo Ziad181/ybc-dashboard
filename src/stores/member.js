@@ -57,6 +57,55 @@ export const useMemberStore = defineStore({
       })
     },
 
+     async storMember(data) {
+      store.loadingStart();
+
+      return await this.$http
+        .post(`/admin/members/create`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(response => {
+          store.loadingFinish();
+          if (response.status === 200) {
+            this.$notificationMessage({
+              title: this.$t("success_messages.saved_successfully"),
+              type: "success",
+            });
+            return true;
+          }
+        })
+        .catch(error => {
+          store.loadingFinish();
+          throw error;
+        });
+    },
+    async updateMember(data) {
+      store.loadingStart();
+
+      return await this.$http
+        .post(`/admin/members/update/${data.id}`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(response => {
+          store.loadingFinish();
+          if (response.status === 200) {
+            this.$notificationMessage({
+              title: this.$t("success_messages.edit_successfully"),
+              type: "success",
+            });
+            return true;
+          }
+        })
+        .catch(error => {
+          store.loadingFinish();
+          throw error;
+        });
+    },
+
     // change/status
     async changeStatus(data) {
       store.loadingStart()
@@ -73,6 +122,25 @@ export const useMemberStore = defineStore({
         store.loadingFinish()
         throw error
       })
+    },
+
+    async deleteMembers(data) {
+      store.loadingStart();
+      await this.$http
+        .delete(`/admin/members/delete/${data.id}`)
+        .then(response => {
+          store.loadingFinish();
+          if (response.status === 200) {
+            this.$notificationMessage({
+              title: this.$t("success_messages.delete_successfully"),
+              type: "success",
+            });
+          }
+        })
+        .catch(error => {
+          store.loadingFinish();
+          throw error;
+        });
     },
   },
 })

@@ -172,14 +172,7 @@ onMounted(() => {});
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.name_ar"
-                  :label="$t('common.name_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.name_en"
-                  :label="$t('common.name_en')"
+                  :label="$t('common.name')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -187,14 +180,7 @@ onMounted(() => {});
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.job_ar"
-                  :label="$t('common.job_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.job_en"
-                  :label="$t('common.job_en')"
+                  :label="$t('common.job')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -246,14 +232,7 @@ onMounted(() => {});
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.company_scope_of_work_ar"
-                  :label="$t('common.company_scope_of_work_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.company_scope_of_work_en"
-                  :label="$t('common.company_scope_of_work_en')"
+                  :label="$t('common.company_scope_of_work')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -286,7 +265,7 @@ onMounted(() => {});
                 />
               </VCol>
               <VCol cols="12">
-                <label>{{ $t("common.description_ar") }}</label>
+                <label>{{ $t("common.description") }}</label>
                 <div class="texteditor" dir="ltr">
                   <QuillEditor
                     v-model:content="formData.description_ar"
@@ -295,19 +274,6 @@ onMounted(() => {});
                     contentType="html"
                     name="description_ar"
                     :placeholder="$t('common.description_ar')"
-                  />
-                </div>
-              </VCol>
-              <VCol cols="12">
-                <label>{{ $t("common.description_en") }}</label>
-                <div class="texteditor" dir="ltr">
-                  <QuillEditor
-                    v-model:content="formData.description_en"
-                    theme="snow"
-                    toolbar="full"
-                    contentType="html"
-                    name="description_en"
-                    :placeholder="$t('common.description_en')"
                   />
                 </div>
               </VCol>

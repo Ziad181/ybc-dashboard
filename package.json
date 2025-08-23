@@ -1,5 +1,5 @@
 {
-    "name": "albakri-dashboard",
+    "name": "ybc-dashboard",
     "version": "7.0.1",
     "scripts": {
         "dev": "npm run build:icons && vite --host",

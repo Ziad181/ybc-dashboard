@@ -102,7 +102,7 @@ const changeStatus = (id, status) => {
           <VCardText>
             <VRow>
               <!-- 👉 Search -->
-              <VCol cols="12" sm="10">
+              <VCol cols="12" sm="9">
                 <VTextField
                   v-model="filteredData.search"
                   :placeholder="$t('common.search')"
@@ -112,16 +112,22 @@ const changeStatus = (id, status) => {
               </VCol>
               <VCol
                 cols="12"
-                sm="2"
+                sm="3"
                 class="d-md-flex justify-space-between ps-0"
               >
                 <VBtn
-                  class="px-7 w-100"
+                  class="px-7"
                   variant="outlined"
                   prepend-icon="mdi-filter-plus-outline"
                   @click="isFilterOrdersVisible = !isFilterOrdersVisible"
                 >
                   {{ $t("common.filter") }}
+                </VBtn>
+                <VBtn
+                  class="px-7"
+                  :to="{ name: 'members-business-support-add' }"
+                >
+                  {{ $t("common.Add a member") }}
                 </VBtn>
               </VCol>
 
@@ -230,6 +236,13 @@ const changeStatus = (id, status) => {
                             params: { id: item.id },
                           }"
                         />
+                         <VListItem
+                          :title="$t('common.edit')"
+                          :to="{
+                            name: 'members-business-support-edit-id',
+                            params: { id: item.id },
+                          }"
+                        />
                         <VListItem
                           v-if="item.status == 'pending'"
                           :title="$t('common.rejection')"
@@ -300,9 +313,9 @@ const changeStatus = (id, status) => {
                 >
                   {{ $t("common.cancel") }}
                 </VBtn>
-                <VBtn @click="changeStatus(isDataModalVisible.id, newStatus)"
-        
-                :color="newStatus == 'rejected' ? 'error' : 'success'"
+                <VBtn
+                  @click="changeStatus(isDataModalVisible.id, newStatus)"
+                  :color="newStatus == 'rejected' ? 'error' : 'success'"
                 >
                   {{
                     newStatus == "rejected"

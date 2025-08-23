@@ -18,7 +18,10 @@ const resolveDataStatusVariant = (stat) => {
   if (stat === "canceled") return "error";
   return "primary";
 };
-
+const openBlock = (file) => {
+  const fileUrl = getAssetUploadedFilesPath(file);
+  window.open(fileUrl, "_blank");
+};
 onMounted(() => {
   store.loadMemberDetails(route.params.id);
 });
@@ -78,7 +81,7 @@ onMounted(() => {
                     {{ $t("common.sender_phone") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.phone
+                    store.getMemberDetails.phone || "-------------"
                   }}</span>
                 </div>
               </div>
@@ -90,7 +93,8 @@ onMounted(() => {
                     {{ $t("common.WhatsApp number") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.whatsapp_number
+                    store.getMemberDetails.club_member?.whatsapp_number ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -102,7 +106,7 @@ onMounted(() => {
                     {{ $t("common.email") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.email
+                    store.getMemberDetails.email || "-------------"
                   }}</span>
                 </div>
               </div>
@@ -131,7 +135,8 @@ onMounted(() => {
                     {{ $t("common.Birth Date") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.birth_date
+                    store.getMemberDetails.club_member?.birth_date ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -144,7 +149,11 @@ onMounted(() => {
                     {{ $t("common.gender") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    $t("common." + store.getMemberDetails.club_member?.gender)
+                    store.getMemberDetails.club_member?.gender
+                      ? $t(
+                          "common." + store.getMemberDetails.club_member?.gender
+                        )
+                      : "-------------"
                   }}</span>
                 </div>
               </div>
@@ -156,7 +165,12 @@ onMounted(() => {
                     {{ $t("common.Marital status") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                     $t("common." + store.getMemberDetails.club_member?.marital_status)
+                    store.getMemberDetails.club_member?.marital_status
+                      ? $t(
+                          "common." +
+                            store.getMemberDetails.club_member?.marital_status
+                        )
+                      : "-------------"
                   }}</span>
                 </div>
               </div>
@@ -168,10 +182,12 @@ onMounted(() => {
                     {{ $t("common.payment") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.payment_type ==
-                    "subscription_annually"
-                      ? $t("common.Pay for a subscription annually $500")
-                      : $t("common.Pay a membership fee($100)")
+                    store.getMemberDetails.club_member?.payment_type
+                      ? store.getMemberDetails.club_member?.payment_type ==
+                        "subscription_annually"
+                        ? $t("common.Pay for a subscription annually $500")
+                        : $t("common.Pay a membership fee($100)")
+                      : "-------------"
                   }}</span>
                 </div>
               </div>
@@ -183,7 +199,8 @@ onMounted(() => {
                     {{ $t("common.The name of the entity in Arabic") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.entity_name_ar
+                    store.getMemberDetails.club_member?.entity_name_ar ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -195,7 +212,8 @@ onMounted(() => {
                     {{ $t("common.The name of the entity in English") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.entity_name_en
+                    store.getMemberDetails.club_member?.entity_name_en ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -207,7 +225,8 @@ onMounted(() => {
                     {{ $t("common.Office Manager Name") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.office_manager_name
+                    store.getMemberDetails.club_member?.office_manager_name ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -219,7 +238,8 @@ onMounted(() => {
                     {{ $t("common.Office Manager Number") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.office_manager_number
+                    store.getMemberDetails.club_member?.office_manager_number ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -231,11 +251,11 @@ onMounted(() => {
                     {{ $t("common.The field of business of the entity") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    $t(
-                      "common." +
-                        store.getMemberDetails.club_member
-                          ?.entity_business_field
-                    )
+                    store.getMemberDetails.club_member?.entity_business_field
+                      ? i18n.global.te("common." + store.getMemberDetails.club_member?.entity_business_field)
+                        ? $t("common." + store.getMemberDetails.club_member?.entity_business_field)
+                        : store.getMemberDetails.club_member?.entity_business_field
+                      : "-------------"
                   }}</span>
                 </div>
               </div>
@@ -247,7 +267,8 @@ onMounted(() => {
                     {{ $t("common.position") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.position
+                    store.getMemberDetails.club_member?.position ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -259,7 +280,8 @@ onMounted(() => {
                     {{ $t("common.Year of establishment of the entity") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.year_of_establishment
+                    store.getMemberDetails.club_member?.year_of_establishment ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -271,7 +293,8 @@ onMounted(() => {
                     {{ $t("common.Number of employees of the company") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.number_of_employees
+                    store.getMemberDetails.club_member?.number_of_employees ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -283,7 +306,8 @@ onMounted(() => {
                     {{ $t("common.Entity Primary Address") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.main_address
+                    store.getMemberDetails.club_member?.main_address ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -295,7 +319,8 @@ onMounted(() => {
                     {{ $t("common.Branches Address") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.sub_address
+                    store.getMemberDetails.club_member?.sub_address ||
+                    "-------------"
                   }}</span>
                 </div>
               </div>
@@ -308,7 +333,20 @@ onMounted(() => {
                     {{ $t("common.Instagram page link") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.instagram_link ??
+                    store.getMemberDetails.club_member?.instagram_link ||
+                    "-------------"
+                  }}</span>
+                </div>
+              </div>
+            </VCol>
+            <VCol cols="6" md="4">
+              <div class="d-flex">
+                <div class="d-flex flex-column">
+                  <span class="text-caption">
+                    {{ $t("common.website_link") }}
+                  </span>
+                  <span class="text-h6 font-weight-medium">{{
+                    store.getMemberDetails.club_member?.website_link ||
                     "-------------"
                   }}</span>
                 </div>
@@ -322,7 +360,7 @@ onMounted(() => {
                     {{ $t("common.Facebook page link") }}
                   </span>
                   <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.facebook_link ??
+                    store.getMemberDetails.club_member?.facebook_link ||
                     "-------------"
                   }}</span>
                 </div>
@@ -364,20 +402,34 @@ onMounted(() => {
                       )
                     }}
                   </span>
-                  <VImg
+
+                  <v-card
                     v-if="store.getMemberDetails.club_member?.id_image"
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.club_member?.id_image
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.club_member?.id_image
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(store.getMemberDetails.club_member?.id_image)
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -390,20 +442,32 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Attach CV") }}
                   </span>
-                  <VImg
+
+                  <v-card
                     v-if="store.getMemberDetails.club_member?.cv"
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.club_member?.cv
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.club_member?.cv
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="openBlock(store.getMemberDetails.club_member?.cv)"
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -416,23 +480,39 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Attach the commercial registration") }}
                   </span>
-
-                  <VImg
+                  <v-card
                     v-if="
                       store.getMemberDetails.club_member?.commercial_register
                     "
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.club_member?.commercial_register
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.club_member
+                            ?.commercial_register
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.club_member
+                            ?.commercial_register
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -445,21 +525,35 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Attach the company logo") }}
                   </span>
-
-                  <VImg
+                  <v-card
                     v-if="store.getMemberDetails.club_member?.entity_logo"
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.club_member?.entity_logo
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.club_member?.entity_logo
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.club_member?.entity_logo
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -472,21 +566,35 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Attach the companys profile (profile)") }}
                   </span>
-
-                  <VImg
+                  <v-card
                     v-if="store.getMemberDetails.club_member?.entity_profile"
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.club_member?.entity_profile
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.club_member?.entity_profile
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.club_member?.entity_profile
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -499,20 +607,35 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Attach the Zakat Card") }}
                   </span>
-                  <VImg
+                  <v-card
                     v-if="store.getMemberDetails.club_member?.zakat_card"
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.club_member?.zakat_card
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.club_member?.zakat_card
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(
+                          store.getMemberDetails.club_member?.zakat_card
+                        )
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -525,21 +648,33 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Attach the tax card") }}
                   </span>
-
-                  <VImg
+                  <v-card
                     v-if="store.getMemberDetails.club_member?.tax_card"
-                    style="
-                      max-width: 100%;
-                      height: 300px;
-                      width: 300px;
-                      border-radius: 8px;
-                    "
-                    :src="
-                      getAssetUploadedFilesPath(
-                        store.getMemberDetails.club_member?.tax_card
-                      )
-                    "
-                  />
+                    class="position-relative"
+                  >
+                    <VImg
+                      style="
+                        max-width: 100%;
+                        height: 300px;
+                        width: 300px;
+                        border-radius: 8px;
+                      "
+                      :src="
+                        getAssetUploadedFilesPath(
+                          store.getMemberDetails.club_member?.tax_card
+                        )
+                      "
+                    />
+                    <VBtn
+                      color="primary"
+                      icon="tabler-download"
+                      @click="
+                        openBlock(store.getMemberDetails.club_member?.tax_card)
+                      "
+                      style="position: absolute; top: 10px; left: 10px"
+                    />
+                  </v-card>
+
                   <span v-else class="text-h6 font-weight-medium">{{
                     "---------------------"
                   }}</span>
@@ -553,9 +688,7 @@ onMounted(() => {
                   <span class="text-caption">
                     {{ $t("common.Brief description of the entity") }}
                   </span>
-                  <span class="text-h6 font-weight-medium">{{
-                    store.getMemberDetails.club_member?.entity_description
-                  }}</span>
+                  <span class="text-h6 font-weight-medium" v-html="store.getMemberDetails.club_member?.entity_description || '-------------'"></span>
                 </div>
               </div>
             </VCol>
