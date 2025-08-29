@@ -25,7 +25,7 @@ export const useMemberStore = defineStore({
   actions: {
     async loadMembers(data) {
       store.loadingStart()
-      await this.$http.get(`/admin/members?page=${data.value.page}&perPage=${data.value.perPage}&status=${data.value.status != null ? data.value.status : ''}&type=${data.value.type != null ? data.value.type : ''}&search=${data.value.search}`).then(response => {
+      await this.$http.get(`/admin/members?page=${data.value.page}&per_page=${data.value.per_page}&status=${data.value.status != null ? data.value.status : ''}&type=${data.value.type != null ? data.value.type : ''}&search=${data.value.search}`).then(response => {
         store.loadingFinish()
         if (response.status === 200) {
           this.members = response.data.data.data;
@@ -57,7 +57,7 @@ export const useMemberStore = defineStore({
       })
     },
 
-     async storMember(data) {
+    async storMember(data) {
       store.loadingStart();
 
       return await this.$http
@@ -122,6 +122,25 @@ export const useMemberStore = defineStore({
         store.loadingFinish()
         throw error
       })
+    },
+
+    async memberChangeStatus(data) {
+      store.loadingStart();
+      await this.$http
+        .post(`/admin/members/toggle/${data.id}`, data)
+        .then(response => {
+          store.loadingFinish();
+          if (response.status === 200) {
+            this.$notificationMessage({
+              title: this.$t("success_messages.change_status_successfully"),
+              type: "success",
+            });
+          }
+        })
+        .catch(error => {
+          store.loadingFinish();
+          throw error;
+        });
     },
 
     async deleteMembers(data) {

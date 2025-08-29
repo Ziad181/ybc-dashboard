@@ -15,7 +15,7 @@ const filteredData = ref({
   type: 2,
   status: null,
   page: 1,
-  perPage: 10,
+  per_page: 10,
 });
 
 onMounted(() => {
@@ -50,6 +50,7 @@ const resolveDataStatusVariant = (stat) => {
 
 const isFilterOrdersVisible = ref(false);
 const isChangeStatusModalVisible = ref(false);
+const isChangeStatusModalVisible2 = ref(false);
 const newStatus = ref("");
 const isDataModalVisible = ref("");
 
@@ -65,7 +66,7 @@ const onPageChange = (data) => {
 };
 
 const onPerPageChange = (data) => {
-  filteredData.value.perPage = data;
+  filteredData.value.per_page = data;
   store.loadMembers(filteredData);
 };
 
@@ -85,6 +86,18 @@ const changeStatus = (id, status) => {
     .catch((error) => {
       i18n.global.$toast.error(error.response.data.message);
     });
+};
+
+const changeStatus2 = (id, status) => {
+  let data = {
+    id: id,
+    status: status == 0 ? 1 : 0,
+  };
+  store.memberChangeStatus(data);
+  isChangeStatusModalVisible2.value = false;
+  setTimeout(() => {
+    store.loadMembers(filteredData);
+  }, 1000);
 };
 </script>
 
@@ -157,6 +170,9 @@ const changeStatus = (id, status) => {
                 </th>
 
                 <th scope="col">
+                  {{ $t("common.Membership status") }}
+                </th>
+                  <th scope="col">
                   {{ $t("common.status") }}
                 </th>
                 <th scope="col" />
@@ -216,7 +232,24 @@ const changeStatus = (id, status) => {
                     {{ $t(`common.${item.status}`) }}
                   </VChip>
                 </td>
-
+  <td>
+                  <VChip
+                    label
+                    :color="
+                      resolveDataStatusVariant(
+                        item.is_active == 1 ? 'actived' : 'stopped'
+                      )
+                    "
+                    size="small"
+                    class="text-capitalize"
+                  >
+                    {{
+                      item.is_active == 1
+                        ? $t("common.actived")
+                        : $t("common.stopped")
+                    }}
+                  </VChip>
+                </td>
                 <!-- 👉 Actions -->
                 <td class="text-center" style="width: 5rem">
                   <VBtn icon size="x-small" color="default" variant="text">
@@ -249,6 +282,24 @@ const changeStatus = (id, status) => {
                               !isChangeStatusModalVisible;
                             isDataModalVisible = item;
                             newStatus = 'approved';
+                          "
+                        />
+                        <VListItem
+                          v-if="item.is_active == 0"
+                          :title="$t('common.activation')"
+                          @click="
+                            isChangeStatusModalVisible2 =
+                              !isChangeStatusModalVisible2;
+                            isDataModalVisible = item;
+                          "
+                        />
+                        <VListItem
+                          v-else
+                          :title="$t('common.suspended')"
+                          @click="
+                            isChangeStatusModalVisible2 =
+                              !isChangeStatusModalVisible2;
+                            isDataModalVisible = item;
                           "
                         />
                       </VList>
@@ -314,6 +365,58 @@ const changeStatus = (id, status) => {
               </VCardText>
             </VCard>
           </VDialog>
+          <VDialog v-model="isChangeStatusModalVisible2" class="v-dialog-sm">
+            <!-- Dialog close btn -->
+            <VBtn
+              icon
+              class="v-dialog-close-btn"
+              @click="
+                isChangeStatusModalVisible2 = !isChangeStatusModalVisible2
+              "
+            >
+              <VIcon icon="tabler-x" />
+            </VBtn>
+
+            <VCard
+              :title="
+                isDataModalVisible.is_active == 0
+                  ? $t('common.Activation confirmation')
+                  : $t('common.Suspend confirmation')
+              "
+            >
+              <VCardText>
+                {{
+                  isDataModalVisible.is_active == 0
+                    ? $t("common.Are you sure about the activation process?")
+                    : $t("common.Are you sure about the suspension process?")
+                }}
+              </VCardText>
+
+              <VCardText class="d-flex justify-end flex-wrap gap-3">
+                <VBtn
+                  variant="tonal"
+                  color="secondary"
+                  @click="isChangeStatusModalVisible2 = false"
+                >
+                  {{ $t("common.cancel") }}
+                </VBtn>
+                <VBtn
+                  @click="
+                    changeStatus2(
+                      isDataModalVisible.id,
+                      isDataModalVisible.is_active
+                    )
+                  "
+                >
+                  {{
+                    isDataModalVisible.is_active == 0
+                      ? $t("common.activation")
+                      : $t("common.suspended")
+                  }}
+                </VBtn>
+              </VCardText>
+            </VCard>
+          </VDialog>
           <VDivider />
 
           <VCardText
@@ -322,7 +425,7 @@ const changeStatus = (id, status) => {
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
               <VSelect
-                v-model="filteredData.perPage"
+                v-model="filteredData.per_page"
                 density="compact"
                 variant="outlined"
                 :items="[10, 20, 30, 50]"

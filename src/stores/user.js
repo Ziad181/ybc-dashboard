@@ -29,7 +29,7 @@ export const useUserStore = defineStore({
   actions: {
     async loadUsers(data) {
       store.loadingStart()
-      await this.$http.get(`/admin/admins?page=${data.value.page}&perPage=${data.value.perPage}&status=${data.value.status != null ? data.value.status : ''}&user_role=${data.value.role != null ? data.value.role : ''}&search=${data.value.search}`).then(response => {
+      await this.$http.get(`/admin/admins?page=${data.value.page}&per_page=${data.value.per_page}&status=${data.value.status != null ? data.value.status : ''}&user_role=${data.value.role != null ? data.value.role : ''}&search=${data.value.search}`).then(response => {
         store.loadingFinish()
         if (response.status === 200) {
           this.users = response.data.data.data;

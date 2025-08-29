@@ -54,7 +54,7 @@ onMounted(() => {
   const roleData = ref({
     search: "",
     page: 1,
-    perPage: 10000,
+    per_page: 10000,
   });
   roleStore.loadRoles(roleData).then(() => {
     store.loadUserDetails(route.params.id).then(() => {

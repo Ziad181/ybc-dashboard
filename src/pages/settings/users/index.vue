@@ -17,7 +17,7 @@ const filteredData = ref({
   role: null,
   status: null,
   page: 1,
-  perPage: 10,
+  per_page: 10,
 });
 
 onMounted(() => {
@@ -25,7 +25,7 @@ onMounted(() => {
   const roleData = ref({
     search: "",
     page: 1,
-    perPage: 10000,
+    per_page: 10000,
   });
   roleStore.loadRoles(roleData);
 });
@@ -68,7 +68,7 @@ const onPageChange = (data) => {
 };
 
 const onPerPageChange = (data) => {
-  filteredData.value.perPage = data;
+  filteredData.value.per_page = data;
   store.loadUsers(filteredData);
 };
 
@@ -385,7 +385,7 @@ const deleteUser = (id) => {
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
               <VSelect
-                v-model="filteredData.perPage"
+                v-model="filteredData.per_page"
                 density="compact"
                 variant="outlined"
                 :items="[10, 20, 30, 50]"

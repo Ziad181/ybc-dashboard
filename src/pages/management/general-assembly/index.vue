@@ -13,7 +13,7 @@ const filteredData = ref({
   type: 2,
   status: null,
   page: 1,
-  perPage: 10,
+  per_page: 10,
 });
 
 onMounted(() => {
@@ -38,6 +38,7 @@ const status = [
 const isFilterOrdersVisible = ref(false);
 const isDeleteModalVisible = ref(false);
 const isDataModalVisible = ref("");
+const isChangeStatusModalVisible = ref(false);
 
 const resolveDataStatusVariant = (stat) => {
   if (stat === "pending") return "warning";
@@ -66,6 +67,17 @@ const onper_pageChange = (data) => {
   store.loadMembers(filteredData);
 };
 
+const changeStatus = (id, status) => {
+  let data = {
+    id: id,
+    status: status == 0 ? 1 : 0,
+  };
+  store.memberChangeStatus(data);
+  isChangeStatusModalVisible.value = false;
+  setTimeout(() => {
+    store.loadMembers(filteredData);
+  }, 1000);
+};
 
 const deleteEmployeeFun = (id, status) => {
   let data = {
@@ -150,7 +162,10 @@ const deleteEmployeeFun = (id, status) => {
                 <th scope="col">
                   {{ $t("common.created_at") }}
                 </th>
-                <th scope="col">
+              <th scope="col">
+                  {{ $t("common.Membership status") }}
+                </th>
+                  <th scope="col">
                   {{ $t("common.status") }}
                 </th>
                 <th scope="col" />
@@ -210,7 +225,24 @@ const deleteEmployeeFun = (id, status) => {
                     {{ $t(`common.${item.status}`) }}
                   </VChip>
                 </td>
-
+  <td>
+                  <VChip
+                    label
+                    :color="
+                      resolveDataStatusVariant(
+                        item.is_active == 1 ? 'actived' : 'stopped'
+                      )
+                    "
+                    size="small"
+                    class="text-capitalize"
+                  >
+                    {{
+                      item.is_active == 1
+                        ? $t("common.actived")
+                        : $t("common.stopped")
+                    }}
+                  </VChip>
+                </td>
                 <!-- 👉 Actions -->
                 <td class="text-center" style="width: 5rem">
                   <VBtn icon size="x-small" color="default" variant="text">
@@ -232,7 +264,24 @@ const deleteEmployeeFun = (id, status) => {
                             params: { id: item.id },
                           }"
                         />
-                      
+                        <VListItem
+                          v-if="item.is_active == 0"
+                          :title="$t('common.activation')"
+                          @click="
+                            isChangeStatusModalVisible =
+                              !isChangeStatusModalVisible;
+                            isDataModalVisible = item;
+                          "
+                        />
+                        <VListItem
+                          v-else
+                          :title="$t('common.suspended')"
+                          @click="
+                            isChangeStatusModalVisible =
+                              !isChangeStatusModalVisible;
+                            isDataModalVisible = item;
+                          "
+                        />
                         <VListItem
                           :title="$t('common.delete')"
                           @click="
@@ -257,7 +306,56 @@ const deleteEmployeeFun = (id, status) => {
             </tfoot>
           </VTable>
 
+          <VDialog v-model="isChangeStatusModalVisible" class="v-dialog-sm">
+            <!-- Dialog close btn -->
+            <VBtn
+              icon
+              class="v-dialog-close-btn"
+              @click="isChangeStatusModalVisible = !isChangeStatusModalVisible"
+            >
+              <VIcon icon="tabler-x" />
+            </VBtn>
 
+            <VCard
+              :title="
+                isDataModalVisible.is_active == 0
+                  ? $t('common.Activation confirmation')
+                  : $t('common.Suspend confirmation')
+              "
+            >
+              <VCardText>
+                {{
+                  isDataModalVisible.is_active == 0
+                    ? $t("common.Are you sure about the activation process?")
+                    : $t("common.Are you sure about the suspension process?")
+                }}
+              </VCardText>
+
+              <VCardText class="d-flex justify-end flex-wrap gap-3">
+                <VBtn
+                  variant="tonal"
+                  color="secondary"
+                  @click="isChangeStatusModalVisible = false"
+                >
+                  {{ $t("common.cancel") }}
+                </VBtn>
+                <VBtn
+                  @click="
+                    changeStatus(
+                      isDataModalVisible.id,
+                      isDataModalVisible.is_active
+                    )
+                  "
+                >
+                  {{
+                    isDataModalVisible.is_active == 0
+                      ? $t("common.activation")
+                      : $t("common.suspended")
+                  }}
+                </VBtn>
+              </VCardText>
+            </VCard>
+          </VDialog>
           <!-- Dialog -->
           <VDialog v-model="isDeleteModalVisible" class="v-dialog-sm">
             <!-- Dialog close btn -->

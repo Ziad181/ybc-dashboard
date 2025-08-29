@@ -12,7 +12,7 @@ const store = useRoleStore();
 const filteredData = ref({
   search: "",
   page: 1,
-  perPage: 10,
+  per_page: 10,
 });
 
 onMounted(() => {
@@ -57,7 +57,7 @@ const onPageChange = (data) => {
 };
 
 const onPerPageChange = (data) => {
-  filteredData.value.perPage = data;
+  filteredData.value.per_page = data;
   store.loadRoles(filteredData);
 };
 
@@ -225,7 +225,7 @@ const deleteRole = (id) => {
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
               <VSelect
-                v-model="filteredData.perPage"
+                v-model="filteredData.per_page"
                 density="compact"
                 variant="outlined"
                 :items="[10, 20, 30, 50]"

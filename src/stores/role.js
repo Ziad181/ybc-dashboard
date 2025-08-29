@@ -27,7 +27,7 @@ export const useRoleStore = defineStore({
   actions: {
     async loadRoles(data) {
       store.loadingStart()
-      await this.$http.get(`/admin/system-roles?page=${data.value.page}&perPage=${data.value.perPage}&search=${data.value.search}`).then(response => {
+      await this.$http.get(`/admin/system-roles?page=${data.value.page}&per_page=${data.value.per_page}&search=${data.value.search}`).then(response => {
         store.loadingFinish()
         if (response.status === 200) {
           this.roles = response.data.data.data
