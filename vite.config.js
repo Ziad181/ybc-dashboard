@@ -16,9 +16,11 @@ import vuetify from 'vite-plugin-vuetify'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  
   plugins: [
     vue(),
     vueJsx(),
+    
 
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({
@@ -35,6 +37,7 @@ export default defineConfig({
         ...routes,
       ],
     }),
+    
     Layouts({
       layoutsDirs: './src/layouts/',
     }),
@@ -62,10 +65,12 @@ export default defineConfig({
   ],
   server: {
     hmr: false,
+    port:4000,
   },
   define: {
     'process.env': {}
   },
+
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src',

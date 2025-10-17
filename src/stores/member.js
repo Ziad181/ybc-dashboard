@@ -25,6 +25,7 @@ export const useMemberStore = defineStore({
   actions: {
     async loadMembers(data) {
       store.loadingStart()
+      
       await this.$http.get(`/admin/members?page=${data.value.page}&per_page=${data.value.per_page}&status=${data.value.status != null ? data.value.status : ''}&type=${data.value.type != null ? data.value.type : ''}&search=${data.value.search}`).then(response => {
         store.loadingFinish()
         if (response.status === 200) {

@@ -4,20 +4,28 @@ import { avatarText } from "@core/utils/formatters";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { getAssetUploadedFilesPath } from "@/helpers/assets";
+import { useManagementStore } from "@/stores/management";
+
 
 const { t } = useI18n(); //
-const store = useMemberStore();
+// const store = useMemberStore();
+
+
+const store = useManagementStore();
 
 const filteredData = ref({
+  type:'general_assembly',
   search: "",
-  type: 2,
   status: null,
   page: 1,
   per_page: 10,
 });
 
 onMounted(() => {
-  store.loadMembers(filteredData);
+  // store.loadMembers(filteredData);
+  store.loadEmployees(filteredData);
+
+
 });
 
 const status = [
@@ -53,18 +61,18 @@ const resolveDataStatusVariant = (stat) => {
 
 const onFilter = () => {
   setTimeout(() => {
-    store.loadMembers(filteredData);
+    store.loadEmployees(filteredData);
   }, 500);
 };
 
 const onPageChange = (data) => {
   filteredData.value.page = data;
-  store.loadMembers(filteredData);
+  store.loadEmployees(filteredData);
 };
 
 const onper_pageChange = (data) => {
   filteredData.value.per_page = data;
-  store.loadMembers(filteredData);
+  store.loadEmployees(filteredData);
 };
 
 const changeStatus = (id, status) => {
@@ -72,10 +80,10 @@ const changeStatus = (id, status) => {
     id: id,
     status: status == 0 ? 1 : 0,
   };
-  store.memberChangeStatus(data);
+  store.employeeChangeStatus(data);
   isChangeStatusModalVisible.value = false;
   setTimeout(() => {
-    store.loadMembers(filteredData);
+    store.loadEmployees(filteredData);
   }, 1000);
 };
 
@@ -83,10 +91,11 @@ const deleteEmployeeFun = (id, status) => {
   let data = {
     id: id,
   };
-  store.deleteMembers(data);
+
+  store.deleteEmployee(data);
   isDeleteModalVisible.value = false;
   setTimeout(() => {
-    store.loadMembers(filteredData);
+    store.loadEmployees(filteredData);
   }, 1000);
 };
 </script>
@@ -147,7 +156,7 @@ const deleteEmployeeFun = (id, status) => {
           <VTable class="text-no-wrap">
             <!-- 👉 table head -->
             <thead>
-              <tr>
+               <tr>
                 <th scope="col">#</th>
                 <th scope="col">
                   {{ $t("common.name") }}
@@ -156,16 +165,9 @@ const deleteEmployeeFun = (id, status) => {
                   {{ $t("common.job") }}
                 </th>
                 <th scope="col">
-                  {{ $t("common.company") }}
-                </th>
-
-                <th scope="col">
                   {{ $t("common.created_at") }}
                 </th>
-              <th scope="col">
-                  {{ $t("common.Membership status") }}
-                </th>
-                  <th scope="col">
+                <th scope="col">
                   {{ $t("common.status") }}
                 </th>
                 <th scope="col" />
@@ -174,7 +176,7 @@ const deleteEmployeeFun = (id, status) => {
             <!-- 👉 table body -->
             <tbody>
               <tr
-                v-for="(item, index) in store.getMembers"
+                v-for="(item, index) in store.getEmployees"
                 :key="index"
                 style="height: 3.75rem"
               >
@@ -200,14 +202,17 @@ const deleteEmployeeFun = (id, status) => {
                     </div>
                   </div>
                 </td>
-                <td>{{ item.position }}</td>
-                <td>
-                  <p dir="ltr" class="mb-0 text-end">
-                    {{ item.entity_name ?? "-----" }}
-                  </p>
+                <td class="pt-2 pb-3">
+                  <div v-html="item.job"></div>
+                </td>
+               <td class="pt-2 pb-3">
+                  {{
+                    $filters.moment(item.created_at, "YYYY-MM-DD, h:mm:ss A") ||
+                    "unknown"
+                  }}
                 </td>
                 <!-- 👉 Status -->
-                <td>
+                <!-- <td>
                   <VChip
                     label
                     :color="
@@ -224,8 +229,9 @@ const deleteEmployeeFun = (id, status) => {
                   >
                     {{ $t(`common.${item.status}`) }}
                   </VChip>
-                </td>
-  <td>
+                </td> -->
+                
+                <td>
                   <VChip
                     label
                     :color="
@@ -250,13 +256,13 @@ const deleteEmployeeFun = (id, status) => {
 
                     <VMenu activator="parent">
                       <VList>
-                        <VListItem
+                        <!-- <VListItem
                           :title="$t('common.view_details')"
                           :to="{
                             name: 'members-club-members-view-id',
                             params: { id: item.id },
                           }"
-                        />
+                        /> -->
                         <VListItem
                           :title="$t('common.edit')"
                           :to="{
@@ -297,7 +303,7 @@ const deleteEmployeeFun = (id, status) => {
             </tbody>
 
             <!-- 👉 table footer  -->
-            <tfoot v-show="!store.getMembers.length">
+            <tfoot v-show="!store.getEmployees.length">
               <tr>
                 <td colspan="7" class="text-center">
                   {{ $t("common.no_data_available") }}
@@ -397,7 +403,7 @@ const deleteEmployeeFun = (id, status) => {
           <VDivider />
 
           <VCardText
-            v-if="store.getTotalMembers.currentPage"
+            v-if="store.getTotalEmployees.currentPage"
             class="d-flex align-center flex-wrap justify-space-between gap-4 py-3 px-5"
           >
             <div class="d-flex align-center flex-wrap justify-space-between">
@@ -411,10 +417,10 @@ const deleteEmployeeFun = (id, status) => {
             </div>
 
             <VPagination
-              v-model="store.getTotalMembers.currentPage"
+              v-model="store.getTotalEmployees.currentPage"
               size="small"
               :total-visible="5"
-              :length="store.getTotalMembers.totalPages"
+              :length="store.getTotalEmployees.totalPages"
               @update:modelValue="onPageChange"
             />
           </VCardText>

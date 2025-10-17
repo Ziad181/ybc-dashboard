@@ -10,6 +10,7 @@ import { getAssetUploadedFilesPath } from "@/helpers/assets";
 const { t } = useI18n(); //
 const store = useMemberStore();
 const isdeleteUserModalVisible = ref(false);
+
 const filteredData = ref({
   search: "",
   type: 2,

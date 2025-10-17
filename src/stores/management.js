@@ -43,7 +43,7 @@ export const useManagementStore = defineStore({
     },
     async loadEmployeeDetails(id) {
       store.loadingStart();
-      await this.$http
+      await this.$http  
         .get(`/admin/management/detail/${id}`)
         .then(response => {
           store.loadingFinish();
@@ -64,6 +64,7 @@ export const useManagementStore = defineStore({
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          
         })
         .then(response => {
           store.loadingFinish();
@@ -76,8 +77,11 @@ export const useManagementStore = defineStore({
           }
         })
         .catch(error => {
+        
           store.loadingFinish();
           throw error;
+
+        
         });
     },
     async updateEmployee(data) {

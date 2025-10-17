@@ -77,8 +77,6 @@ const removeCompanyLogoByIndex = (index) => {
 };
 
 const onSubmitForm = () => {
-
-  
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
       var data = {
@@ -111,7 +109,6 @@ const onSubmitForm = () => {
     }
   });
 };
-
 
 onMounted(() => {});
 </script>
@@ -179,7 +176,8 @@ onMounted(() => {});
                   :rules="[requiredValidator]"
                 />
               </VCol>
-               <VCol md="6" cols="12">
+
+              <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.name_en"
                   :label="$t('common.name_en')"
@@ -249,14 +247,7 @@ onMounted(() => {});
               <VCol md="6" cols="12">
                 <VTextField
                   v-model="formData.company_scope_of_work_ar"
-                  :label="$t('common.company_scope_of_work_ar')"
-                  :rules="[requiredValidator]"
-                />
-              </VCol>
-              <VCol md="6" cols="12">
-                <VTextField
-                  v-model="formData.company_scope_of_work_en"
-                  :label="$t('common.company_scope_of_work_en')"
+                  :label="$t('common.company_scope_of_work')"
                   :rules="[requiredValidator]"
                 />
               </VCol>
@@ -290,7 +281,7 @@ onMounted(() => {});
               </VCol>
               <VCol cols="12">
                 <label>{{ $t("common.description_ar") }}</label>
-                <div class="texteditor" dir="ltr">
+                <div class="texteditor" dir="rtl">
                   <QuillEditor
                     v-model:content="formData.description_ar"
                     theme="snow"
@@ -315,6 +306,7 @@ onMounted(() => {});
                   />
                 </div>
               </VCol>
+
               <!-- 👉 Form Actions -->
               <VCol cols="12" class="d-flex flex-wrap gap-4">
                 <VBtn

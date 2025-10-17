@@ -52,8 +52,10 @@ const sectorList = ref([
 ]);
 
 const otherProjectSector = ref("");
+
 const formData = ref({
   name: "",
+  name_en: "",
   email: "",
   phone: "",
   image: [],
@@ -81,6 +83,7 @@ const formData = ref({
   project_logo: [],
   license: [],
 });
+
 const rules = {
   required: (value) => !!value || t("validators.This field is required"),
   email: (value) =>
@@ -89,6 +92,7 @@ const rules = {
   requiredFile: (value) =>
     (value && value.length > 0) || t("validators.This field is required"),
 };
+
 const onSubmitForm = () => {
   refVForm.value?.validate().then(({ valid: isValid }) => {
     if (isValid) {
@@ -160,10 +164,20 @@ onMounted(() => {});
                 <v-text-field
                   variant="outlined"
                   :rules="[rules.required]"
-                  :label="$t('common.Full Name')"
+                  :label="$t('common.name_ar')"
                   v-model="formData.name"
                 ></v-text-field>
               </v-col>
+
+              <v-col cols="12" sm="6">
+                <v-text-field
+                  variant="outlined"
+                  :rules="[rules.required]"
+                  :label="$t('common.name_en')"
+                  v-model="formData.name_en"
+                ></v-text-field>
+              </v-col>
+
               <v-col cols="12" sm="6">
                 <v-text-field
                   variant="outlined"
